@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+. venv/bin/activate
+
+DATABASE_URL=postgresql://localhost/python-heroku-starter \
+FLASK_DEBUG=1 \
+FLASK_APP=app.py \
+python -m flask run
