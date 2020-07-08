@@ -30,6 +30,14 @@ pip install gunicorn Flask psycopg2 requests
 pip freeze > requirements.txt
 ```
 
+Create database:
+
+```sh
+createdb python-heroku-starter
+```
+
+Created script `bin/start-dev` and basic `app.py`.
+
 Specify Python version and Procfile for Heroku:
 
 ```sh
@@ -38,13 +46,20 @@ echo 'python-3.7.7' > runtime.txt
 echo 'web gunicorn app:app' > Procfile
 ```
 
-Create database:
+Push files to git:
 
 ```sh
-createdb python-heroku-starter
+git add .
+git commit -m 'hello world'
+git push heroku master
 ```
 
-Created script `bin/start-dev`.
+Create heroku app and deploy:
+
+```sh
+heroku apps:create --region eu python-heroku-kitchensink
+git push heroku master
+```
 
 ## Resources
 
