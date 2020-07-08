@@ -25,6 +25,27 @@ bin/start-dev
 open http://localhost:5000
 ```
 
+## Invoking the API
+
+```
+export BASE_URL=http://localhost:5000
+
+# list
+curl -i $BASE_URL/v1/urls
+
+# get
+curl -i $BASE_URL/v1/urls/1
+
+# create
+curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com"}' $BASE_URL/v1/urls
+
+# update
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/2
+
+# delete
+curl -i -X DELETE $BASE_URL/v1/urls/2
+```
+
 ## Talking to Postgres
 
 From python:
