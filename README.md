@@ -2,15 +2,33 @@
 
 ## Setting up Development Environment
 
+Install packages in a virtual env:
+
 ```sh
-python -m venv env
+python -m venv venv
+. venv/bin/activate
 pip install -r requirements.txt
+```
 
-createdb python_heroku_starter
+Create database:
 
+```sh
+createdb -U postgres python-heroku-kitchensink
+python -c "import db; db.create_schema()"
+```
+
+Start server:
+
+```sh
 bin/start-dev
 
 open http://localhost:5000
+```
+
+Connecting to postgres:
+
+```
+psql -U postgres python-heroku-kitchensink
 ```
 
 ## How this app was created
@@ -61,7 +79,15 @@ heroku apps:create --region eu python-heroku-kitchensink
 git push heroku master
 ```
 
+Test the app:
+
+```sh
+heroku open
+```
+
 ## Resources
+
+* [Installing Postgres via Brew on Mac](https://gist.github.com/ibraheem4/ce5ccd3e4d7a65589ce84f2a3b7c23a3)
 
 * [Python Flask/Auth/Heroku Example app](https://github.com/peter/api-auth-examples/tree/master/flask)
 
