@@ -42,6 +42,22 @@ def query(*args):
     cur.execute(*args)
     return list(map(dict, cur.fetchall()))
 
-def query_one(conn, *args):
-    rows = query(conn, *args)
+def query_one(*args):
+    rows = query(*args)
     return rows[0] if len(rows) > 0 else None
+
+def insert(table_name, doc):
+  columns = list(doc.keys())
+  # TODO: sanity check columns to check for SQL injection
+  values = [doc[k] for k in columns]
+  interpolate_values = ['%s' for _ in values]
+  sql = f'INSERT INTO {table_name} ({", ".join(columns)}) VALUES ({", ".join(interpolate_values)}) RETURNING id'
+  return execute(sql, values)
+
+def update(table_name, id, doc):
+  columns = list(doc.keys())
+  # TODO: sanity check columns to check for SQL injection
+  interpolate_values = [f'SET {c} = %s' for c in columns]
+  values = [doc[k] for k in columns] + [id]
+  sql = f'UPDATE {table_name} {" ".join(interpolate_values)} where id = %s'
+  execute(sql, values)

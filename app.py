@@ -18,19 +18,23 @@ def urls_get(url_id):
 
 @app.route('/v1/urls', methods = ['POST'])
 def urls_create():
+    # TODO: proper validation
+    # TODO: whitelist column names, SQL injection risk
     if not request.json or not 'url' in request.json:
         abort(400)
-    # TODO: generate SQL from dict
-    db.execute('INSERT INTO urls (url, created_at) VALUES (%s, %s) RETURNING id', (request.json['url'], datetime.now()))
+    doc = {**request.json, 'created_at': datetime.now()}
+    db.insert('urls', doc)
     # TODO: get id and return created doc: https://stackoverflow.com/questions/5247685/python-postgres-psycopg2-getting-id-of-row-just-inserted
-    return jsonify( { 'url': request.json['url'] } ), 201
+    return jsonify(doc)
 
 @app.route('/v1/urls/<int:url_id>', methods = ['PUT'])
 def urls_update(url_id):
-    # TODO: generate SQL from dict
+    # TODO: proper validation
+    # TODO: whitelist column names, SQL injection risk
     if not request.json or not 'url' in request.json:
         abort(400)
-    db.execute('UPDATE urls SET url = %s where id = %s', (request.json['url'], url_id))
+    doc = request.json
+    db.update('urls', url_id, doc)
     row = db.query_one("select * from urls where id = %s", [url_id])
     return jsonify(row)
 
