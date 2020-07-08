@@ -1,5 +1,4 @@
 import psycopg2
-import urllib.parse as urlparse
 import os
 
 DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:@localhost/python-heroku-kitchensink')
