@@ -25,7 +25,32 @@ bin/start-dev
 open http://localhost:5000
 ```
 
-Connecting to postgres:
+## Talking to Postgres
+
+From python:
+
+```sh
+python
+import db
+from datetime import datetime
+
+# list
+db.query("select * from urls")
+
+# create
+db.execute('INSERT INTO urls (url, created_at) VALUES (%s, %s)', ("http://www.aftonbladet.se", datetime.now()))
+
+# get
+db.query_one("select * from urls where id = %s", [1])
+
+# update
+db.execute('UPDATE urls SET url = %s where id = %s', ("http://www.expressen.se", 1))
+
+# delete
+db.execute('DELETE from urls where id = %s', [1])
+```
+
+Connecting with psql:
 
 ```
 psql -U postgres python-heroku-kitchensink
