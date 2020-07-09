@@ -19,7 +19,7 @@ def create_schema():
 
 def migrate_schema():
   # TODO: create db_migrations table if not exists
-  # TODO: For each model, run any migrations not run
+  # TODO: For each model, run any migrations not run (wrapped in a try/catch)
   pass
 
 def execute(*args):

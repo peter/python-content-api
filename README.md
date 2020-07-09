@@ -1,4 +1,10 @@
-# Example Python Heroku App
+# Example Python Heroku CRUD Api
+
+Includes:
+
+* postgresql access with psycopg2
+* CRUD API with Flask
+* validation with jsonschema
 
 ## Setting up Development Environment
 
