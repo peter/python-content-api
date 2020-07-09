@@ -24,7 +24,8 @@ def migrate_schema():
 
 def execute(*args):
     cur = conn.cursor()
-    return cur.execute(*args)
+    cur.execute(*args)
+    return cur
 
 def query_tuple(*args):
     cur = conn.cursor()
@@ -55,7 +56,9 @@ def insert(table_name, doc):
   values = [doc[k] for k in columns]
   interpolate_values = ['%s' for _ in values]
   sql = f'INSERT INTO {table_name} ({", ".join(columns)}) VALUES ({", ".join(interpolate_values)}) RETURNING id'
-  return execute(sql, values)
+  cur = execute(sql, values)
+  id = cur.fetchone()[0]
+  return id
 
 def update(table_name, id, doc):
   columns = list(doc.keys())

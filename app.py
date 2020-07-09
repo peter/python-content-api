@@ -31,9 +31,9 @@ def urls_get(url_id):
 def urls_create():
     validate(instance=request.json, schema=models.urls.json_schema)
     doc = {**request.json, 'created_at': datetime.now()}
-    db.insert('urls', doc)
-    # TODO: get id and return created doc: https://stackoverflow.com/questions/5247685/python-postgres-psycopg2-getting-id-of-row-just-inserted
-    return jsonify(doc)
+    url_id = db.insert('urls', doc)
+    row = db.query_one("select * from urls where id = %s", [url_id])
+    return jsonify(row)
 
 @app.route('/v1/urls/<int:url_id>', methods = ['PUT'])
 def urls_update(url_id):

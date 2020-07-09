@@ -163,11 +163,17 @@ heroku open
 ## Resources
 
 * [Installing Postgres via Brew on Mac](https://gist.github.com/ibraheem4/ce5ccd3e4d7a65589ce84f2a3b7c23a3)
-
 * [Python Flask/Auth/Heroku Example app](https://github.com/peter/api-auth-examples/tree/master/flask)
-
 * [Getting Started on Heroku with Python](https://devcenter.heroku.com/articles/getting-started-with-python?singlepage=true)
 * [Deploying Python Applications with Gunicorn (Heroku)](https://devcenter.heroku.com/articles/python-gunicorn)
 * [Gunicorn homepage](https://gunicorn.org)
 * [Specifying a Python Runtime](https://devcenter.heroku.com/articles/python-runtimes)
 * [Most Popular Python Packages](https://pypistats.org/top)
+* [Bottle Web Framework (alternative to Flask)](https://bottlepy.org/docs/dev/)
+
+Serverless (AWS Lambda) deployment:
+
+* [Chalice - Serverless Python](https://realpython.com/aws-chalice-serverless-python/)
+* [AWS Lambda with Python - Simple Example](https://www.scalyr.com/blog/aws-lambda-with-python/)
+* [AWS Lambda with Python - Getting Started Guide](https://stackify.com/aws-lambda-with-python-a-complete-getting-started-guide/)
+* [The Official Guide to Serverless Flask](https://www.serverless.com/flask)
