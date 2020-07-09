@@ -1,10 +1,14 @@
 # Example Python Heroku CRUD API
 
-Includes:
+Features:
 
 * postgresql access with psycopg2
-* CRUD API with Flask
+* generic/dynamic CRUD model API with Flask
 * validation with jsonschema
+
+TODO:
+
+* OpenAPI (swagger.json) generation based on model routes
 
 ## Setting up Development Environment
 
