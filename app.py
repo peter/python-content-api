@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, make_response, request
+from model_api import make_model_api
 import models.urls
 
 app = Flask(__name__)
@@ -17,7 +18,7 @@ def handle_exception(e):
     }
     return flask_response({'body': body, 'status': 500})
 
-def make_crud_routes(path, model):
+def make_flask_routes(path, model):
     @app.route(f'/v1/{path}', methods = ['GET'])
     def list():
         return flask_response(model.list())
@@ -38,4 +39,10 @@ def make_crud_routes(path, model):
     def delete(id):
         return flask_response(model.delete(id))
 
-make_crud_routes('urls', models.urls)
+models = {
+    'urls': models.urls.json_schema
+}
+
+for table_name, json_schema in models.items():
+    model = make_model_api(table_name, json_schema)
+    make_flask_routes(table_name, model)
