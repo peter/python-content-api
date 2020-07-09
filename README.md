@@ -30,20 +30,43 @@ open http://localhost:5000
 ```
 export BASE_URL=http://localhost:5000
 
+# create with invalid data yields 400
+curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com", "foo": 1}' $BASE_URL/v1/urls
+
+# successful create
+curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com"}' $BASE_URL/v1/urls
+
 # list
 curl -i $BASE_URL/v1/urls
+
+# get of non-existant id yields 404
+curl -i $BASE_URL/v1/urls/2
 
 # get
 curl -i $BASE_URL/v1/urls/1
 
-# create
-curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com"}' $BASE_URL/v1/urls
-
-# update
+# update of non-existant id yields 404
 curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/2
 
-# delete
+# update with invalid data yields 400
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com", "foo": 1}' $BASE_URL/v1/urls/1
+
+# successful update
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/1
+
+# Check the update happened
+curl -i $BASE_URL/v1/urls
+curl -i $BASE_URL/v1/urls/1
+
+# delete of non-existant id yields 404
 curl -i -X DELETE $BASE_URL/v1/urls/2
+
+# successful delete
+curl -i -X DELETE $BASE_URL/v1/urls/1
+
+# Check the delete happened
+curl -i $BASE_URL/v1/urls
+curl -i $BASE_URL/v1/urls/1
 ```
 
 ## Talking to Postgres
