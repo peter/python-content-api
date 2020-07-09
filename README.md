@@ -5,6 +5,7 @@ Features:
 * postgresql access with psycopg2
 * generic/dynamic CRUD model API with Flask
 * validation with jsonschema
+* API testing with pytest and the request package
 
 TODO:
 
