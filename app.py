@@ -17,22 +17,25 @@ def handle_exception(e):
     }
     return flask_response({'body': body, 'status': 500})
 
-@app.route('/v1/urls', methods = ['GET'])
-def urls_list():
-    return flask_response(models.urls.list())
+def make_crud_routes(path, model):
+    @app.route(f'/v1/{path}', methods = ['GET'])
+    def list():
+        return flask_response(model.list())
 
-@app.route('/v1/urls/<int:url_id>', methods = ['GET'])
-def urls_get(url_id):
-    return flask_response(models.urls.get(url_id))
+    @app.route(f'/v1/{path}/<int:id>', methods = ['GET'])
+    def get(id):
+        return flask_response(model.get(id))
 
-@app.route('/v1/urls', methods = ['POST'])
-def urls_create():
-    return flask_response(models.urls.create(request.json))
+    @app.route(f'/v1/{path}', methods = ['POST'])
+    def create():
+        return flask_response(model.create(request.json))
 
-@app.route('/v1/urls/<int:url_id>', methods = ['PUT'])
-def urls_update(url_id):
-    return flask_response(models.urls.update(url_id, request.json))
+    @app.route(f'/v1/{path}/<int:id>', methods = ['PUT'])
+    def update(id):
+        return flask_response(model.update(id, request.json))
 
-@app.route('/v1/urls/<int:url_id>', methods = ['DELETE'])
-def urls_delete(url_id):
-    return flask_response(models.urls.delete(url_id))
+    @app.route(f'/v1/{path}/<int:id>', methods = ['DELETE'])
+    def delete(id):
+        return flask_response(model.delete(id))
+
+make_crud_routes('urls', models.urls)
