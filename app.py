@@ -3,10 +3,19 @@ import models.urls
 
 app = Flask(__name__)
 
-# TODO: status 500 handler that returns JSON
-
 def flask_response(result):
     return make_response(jsonify(result.get('body', {})), result.get('status', 200))
+
+# Custom generic Flask exception handler (the default is an HTML response)
+@app.errorhandler(Exception)
+def handle_exception(e):
+    body = {
+        'error': {
+            'type': type(e).__name__,
+            'message': (e.args[0] if e.args else None)
+        }
+    }
+    return flask_response({'body': body, 'status': 500})
 
 @app.route('/v1/urls', methods = ['GET'])
 def urls_list():
