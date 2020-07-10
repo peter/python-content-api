@@ -154,14 +154,6 @@ createdb python-heroku-starter
 
 Created script `bin/start-dev` and basic `app.py`.
 
-Specify Python version and Procfile for Heroku:
-
-```sh
-python --version # => Python 3.7.7
-echo 'python-3.7.7' > runtime.txt
-echo 'web gunicorn app:app' > Procfile
-```
-
 Push files to git:
 
 ```sh
@@ -170,17 +162,103 @@ git commit -m 'hello world'
 git push heroku master
 ```
 
-Create heroku app and deploy:
-
-```sh
-heroku apps:create --region eu python-heroku-kitchensink
-git push heroku master
-```
-
 Test the app:
 
 ```sh
 heroku open
+```
+
+## Deployment with Heroku
+
+Specified Python version and Procfile for Heroku:
+
+```sh
+python --version # => Python 3.7.7
+echo 'python-3.7.7' > runtime.txt
+echo 'web gunicorn app:app' > Procfile
+```
+
+Create heroku app:
+
+```sh
+heroku apps:create --region eu python-heroku-kitchensink
+```
+
+
+Deploy:
+
+```sh
+git push heroku master
+```
+
+## Deployment with Zappa to AWS Lambda
+
+Make sure you have an AWS account and set up a user with programmatic access in the AWS console. Add the keys to `~/.aws/credentials`:
+
+```
+[default]
+aws_access_key_id = ...
+aws_secret_access_key = ...
+```
+
+Install Zappa:
+
+```sh
+pip install zappa
+pip freeze > requirements.txt
+```
+
+[Recreate the virtual env](https://github.com/Miserlou/Zappa/issues/1232):
+
+```sh
+deactivate
+rm -rf ./venv
+python -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+```
+
+```sh
+zappa init
+```
+
+The `zappa init` command will create a `zappa_settings.json` file like this:
+
+```json
+{
+    "production": {
+        "app_function": "app.app",
+        "profile_name": "private",
+        "aws_region": "eu-north-1",
+        "project_name": "python-heroku-k",
+        "runtime": "python3.8",
+        "s3_bucket": "zappa-python-heroku-kitchensink"
+    }
+}
+```
+
+Deploy:
+
+```sh
+zappa deploy production
+```
+
+Zappa error: [Status check on the deployed lambda failed](https://github.com/Miserlou/Zappa/issues/1985), see also [Error loading psycopg2 module](https://github.com/Miserlou/Zappa/issues/800).
+
+Zappa debug logs:
+
+```sh
+zappa tail
+```
+
+Used the AWS console for lambda to set the DATABASE_URL [env variable](https://github.com/Miserlou/Zappa#setting-environment-variables) for the Heroku app.
+
+Issue: the AWS lambda app is deployed at a URL like `https://ivjv8xpkkj.execute-api.eu-north-1.amazonaws.com/production` i.e. it is not deployed at the root path `/` but rather at `/production`. This breaks the swagger UI.
+
+The API tests can be run against the deployed app like so:
+
+```sh
+BASE_URL=https://ivjv8xpkkj.execute-api.eu-north-1.amazonaws.com/production python -m pytest -s app_test.py
 ```
 
 ## Resources
