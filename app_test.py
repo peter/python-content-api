@@ -3,7 +3,7 @@ import requests
 import uuid
 import app
 
-BASE_URL = os.getenv('BASE_URL', 'http://localhost:5000')
+BASE_URL = os.getenv('BASE_URL', 'http://localhost:5001')
 
 def uuid_hex():
     return uuid.uuid4().hex
