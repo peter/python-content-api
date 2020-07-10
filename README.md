@@ -8,6 +8,8 @@ Features:
 * Validation with jsonschema
 * API testing with pytest and the request package
 * OpenAPI/Swagger documentation generated from model routes
+* Deployment to Heroku
+* Deployment with Zappa to AWS Lambda
 
 ## Setting up Development Environment
 
