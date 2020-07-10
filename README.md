@@ -7,7 +7,7 @@ Features:
 * a Flask CRUD API (a thin wrapper around the model API)
 * validation with jsonschema
 * API testing with pytest and the request package
-* OpenAPI/Swagger documentation (and swagger.json spec) based on model routes
+* OpenAPI/Swagger documentation generated from model routes
 
 ## Setting up Development Environment
 
@@ -41,6 +41,8 @@ bin/test
 ```
 
 ## API Documentation (OpenAPI/Swagger)
+
+Interactive HTML docs:
 
 ```sh
 open http://localhost:5000/static/swagger/index.html
