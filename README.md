@@ -3,7 +3,8 @@
 Features:
 
 * postgresql access with psycopg2
-* generic/dynamic CRUD model API with Flask
+* a generic CRUD model API that is easy to adapt to Flask or serverless etc.
+* a Flask CRUD API based on the model API
 * validation with jsonschema
 * API testing with pytest and the request package
 
