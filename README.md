@@ -40,6 +40,18 @@ open http://localhost:5000
 bin/test
 ```
 
+## API Documentation (OpenAPI/Swagger)
+
+```sh
+open http://localhost:5000/static/swagger/index.html
+```
+
+OpenAPI specification:
+
+```sh
+open http://localhost:5000/v1/swagger.json
+```
+
 ## Invoking the API
 
 ```
