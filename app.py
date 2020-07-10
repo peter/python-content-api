@@ -1,7 +1,8 @@
-from flask import Flask, jsonify, make_response, request
-from model_api import make_model_api
-import models.urls
+import os
+from flask import Flask, jsonify, make_response, request, redirect, send_from_directory
 from util import exception_body
+from swagger import generate_swagger
+from model_routes import get_model_routes
 
 app = Flask(__name__)
 
@@ -9,35 +10,43 @@ def flask_response(result):
     return make_response(jsonify(result.get('body', {})), result.get('status', 200))
 
 # Custom generic Flask exception handler (the default is an HTML response)
-@app.errorhandler(Exception)
-def handle_exception(e):
-    return flask_response({'body': exception_body(e), 'status': 500})
+if not os.environ.get('FLASK_DEBUG', '0'):
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        return flask_response({'body': exception_body(e), 'status': 500})
 
-def make_flask_routes(path, model):
-    @app.route(f'/v1/{path}', methods = ['GET'])
-    def list():
-        return flask_response(model.list())
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
 
-    @app.route(f'/v1/{path}/<int:id>', methods = ['GET'])
-    def get(id):
-        return flask_response(model.get(id))
+def make_flask_routes(model_routes):
+    def get_flask_handler(route):
+        handler = route['handler']
+        def list():
+            return flask_response(handler())
+        def get(id):
+            return flask_response(handler(id))
+        def create():
+            return flask_response(handler(request.json))
+        def update(id):
+            return flask_response(handler(id, request.json))
+        def delete(id):
+            return flask_response(handler(id))
+        flask_handler = locals()[handler.__name__]
+        # See: https://stackoverflow.com/questions/17256602/assertionerror-view-function-mapping-is-overwriting-an-existing-endpoint-functi
+        flask_handler.__name__ = f'{route["model"].name}_{handler.__name__}'
+        return flask_handler
+    for route in model_routes:
+        app.route(route['path'], methods = [route['method']])(get_flask_handler(route))
 
-    @app.route(f'/v1/{path}', methods = ['POST'])
-    def create():
-        return flask_response(model.create(request.json))
+model_routes = get_model_routes()
 
-    @app.route(f'/v1/{path}/<int:id>', methods = ['PUT'])
-    def update(id):
-        return flask_response(model.update(id, request.json))
+make_flask_routes(model_routes)
 
-    @app.route(f'/v1/{path}/<int:id>', methods = ['DELETE'])
-    def delete(id):
-        return flask_response(model.delete(id))
+@app.route('/')
+def redirect_to_swagger():
+    return redirect('static/swagger/index.html')
 
-models = {
-    'urls': models.urls.json_schema
-}
-
-for table_name, json_schema in models.items():
-    model = make_model_api(table_name, json_schema)
-    make_flask_routes(table_name, model)
+@app.route('/v1/swagger.json')
+def swagger_json():
+    return jsonify(generate_swagger(model_routes))

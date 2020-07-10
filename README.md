@@ -7,10 +7,7 @@ Features:
 * a Flask CRUD API (a thin wrapper around the model API)
 * validation with jsonschema
 * API testing with pytest and the request package
-
-TODO:
-
-* OpenAPI (swagger.json) generation based on model routes
+* OpenAPI/Swagger documentation (and swagger.json spec) based on model routes
 
 ## Setting up Development Environment
 
@@ -182,6 +179,7 @@ heroku open
 * [Specifying a Python Runtime](https://devcenter.heroku.com/articles/python-runtimes)
 * [Most Popular Python Packages](https://pypistats.org/top)
 * [Bottle Web Framework (alternative to Flask)](https://bottlepy.org/docs/dev/)
+* [Swagger UI](https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation)
 
 Serverless (AWS Lambda) deployment:
 

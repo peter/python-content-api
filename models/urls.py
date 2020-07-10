@@ -1,3 +1,5 @@
+name = 'urls'
+
 json_schema = {
   'type': 'object',
   'properties': {
@@ -7,8 +9,8 @@ json_schema = {
   'additionalProperties': False
 }
 
-db_schema = '''
-  CREATE TABLE urls (
+db_schema = f'''
+  CREATE TABLE {name} (
     id serial PRIMARY KEY,
     url VARCHAR (355) UNIQUE NOT NULL,
     created_at TIMESTAMP NOT NULL,
