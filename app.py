@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response, request
 from model_api import make_model_api
 import models.urls
+from util import exception_body
 
 app = Flask(__name__)
 
@@ -10,13 +11,7 @@ def flask_response(result):
 # Custom generic Flask exception handler (the default is an HTML response)
 @app.errorhandler(Exception)
 def handle_exception(e):
-    body = {
-        'error': {
-            'type': type(e).__name__,
-            'message': (e.args[0] if e.args else None)
-        }
-    }
-    return flask_response({'body': body, 'status': 500})
+    return flask_response({'body': exception_body(e), 'status': 500})
 
 def make_flask_routes(path, model):
     @app.route(f'/v1/{path}', methods = ['GET'])

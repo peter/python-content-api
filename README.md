@@ -36,6 +36,12 @@ bin/start-dev
 open http://localhost:5000
 ```
 
+## Running the API tests
+
+```sh
+bin/test
+```
+
 ## Invoking the API
 
 ```

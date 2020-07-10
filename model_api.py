@@ -2,6 +2,11 @@ import db
 from datetime import datetime
 from json_schema import validate_schema, validate_response
 from types import SimpleNamespace
+from util import exception_body
+from psycopg2.errors import UniqueViolation
+
+def unique_response(unique_error):
+    return {'body': exception_body(unique_error), 'status': 400}
 
 def make_model_api(table_name, json_schema):
   def list():
@@ -19,15 +24,21 @@ def make_model_api(table_name, json_schema):
       if schema_error:
         return validate_response(schema_error)
       doc = {**data, 'created_at': datetime.now()}
-      id = db.insert(table_name, doc)
-      created_doc = db.query_one(f'select * from {table_name} where id = %s', [id])
-      return {'body': created_doc}
+      try:
+        id = db.insert(table_name, doc)
+        created_doc = db.query_one(f'select * from {table_name} where id = %s', [id])
+        return {'body': created_doc}
+      except UniqueViolation as unique_error:
+          return unique_response(unique_error)
 
   def update(id, data):
       schema_error = validate_schema(data, json_schema)
       if schema_error:
         return validate_response(schema_error)
-      db.update(table_name, id, data)
+      try:
+        db.update(table_name, id, data)
+      except UniqueViolation as unique_error:
+          return unique_response(unique_error)
       updated_doc = db.query_one(f'select * from {table_name} where id = %s', [id])
       if not updated_doc:
           return {'status': 404}
