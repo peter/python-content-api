@@ -2,7 +2,7 @@
 
 bin/start-test &
 
-python -m pytest -s -vv app_test.py
+pytest
 
 # https://spin.atomicobject.com/2017/08/24/start-stop-bash-background-process/
 kill 0

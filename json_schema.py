@@ -8,5 +8,5 @@ def validate_schema(instance, schema):
     return schema_error
 
 def validate_response(schema_error):
-  body = {'message': schema_error.message, 'schema': schema_error.schema}
+  body = {'error': {'message': schema_error.message, 'schema': schema_error.schema}}
   return {'status': 400, 'body': body}

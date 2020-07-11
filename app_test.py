@@ -2,6 +2,7 @@ import os
 import requests
 import uuid
 import app
+from util import get
 
 BASE_URL = os.getenv('BASE_URL', 'http://localhost:5001')
 
@@ -21,6 +22,7 @@ def test_crud_happy_path():
   invalid_doc = {**doc, 'foo': 1}
   response = requests.post(list_url, json=invalid_doc)
   assert response.status_code == 400
+  assert get(response.json(), 'error.message')
 
   # Successful create
   response = requests.post(list_url, json=doc)
@@ -42,6 +44,7 @@ def test_crud_happy_path():
   response = requests.post(list_url, json={'url': doc['url']})
   print(response.json())
   assert response.status_code == 400
+  assert get(response.json(), 'error.message')
 
   get_url_404 = f'{list_url}/{doc["id"] + 100}'
 
@@ -52,6 +55,7 @@ def test_crud_happy_path():
   # Get invalid id
   response = requests.get(f'{list_url}/fooobar')
   assert response.status_code == 400
+  assert get(response.json(), 'error.message')
 
   # List
   response = requests.get(list_url)
@@ -68,6 +72,7 @@ def test_crud_happy_path():
   # Update with invalid schema
   response = requests.put(get_url, json={'url': 123})
   assert response.status_code == 400
+  assert get(response.json(), 'error.message')
 
   # Successful update
   response = requests.put(get_url, json={'url': new_url})
