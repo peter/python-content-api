@@ -12,6 +12,7 @@ def get(value, keys, default_value = None):
     '''
         Useful for reaching into nested JSON like data
         Inspired by JavaScript lodash get and Clojure get-in etc.
+        Similar to https://github.com/dgilland/pydash get
     '''
     if value is None or keys is None:
         return None
