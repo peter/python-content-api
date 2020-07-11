@@ -1,8 +1,10 @@
 from model_api import make_model_api
 import models.urls
+import models.fetches
 
 MODELS = [
-    models.urls
+    models.urls,
+    models.fetches
 ]
 
 id_parameter = {

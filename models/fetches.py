@@ -3,7 +3,11 @@ name = 'fetches'
 json_schema = {
   'type': 'object',
   'properties': {
-  }
+    'url_id': {'type': 'integer'},
+    'data': {'type': 'string'}
+  },
+  'additionalProperties': False,
+  'required': ['url_id', 'data']
 }
 
 db_schema = f'''
