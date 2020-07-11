@@ -49,6 +49,10 @@ def test_crud_happy_path():
   response = requests.get(get_url_404)
   assert response.status_code == 404
 
+  # Get invalid id
+  response = requests.get(f'{list_url}/fooobar')
+  assert response.status_code == 400
+
   # List
   response = requests.get(list_url)
   assert response.status_code == 200

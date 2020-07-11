@@ -1,4 +1,5 @@
 import db
+import re
 from datetime import datetime
 from json_schema import validate_schema, validate_response
 from types import SimpleNamespace
@@ -8,12 +9,19 @@ from psycopg2.errors import UniqueViolation
 def unique_response(unique_error):
     return {'body': exception_body(unique_error), 'status': 400}
 
+def is_valid_id(id):
+  return re.match('\A[1-9][0-9]*\Z', id)
+
+invalid_id_response = {'body': {'error': {'message': 'Invalid id - must be integer'}}, 'status': 400}
+
 def make_model_api(table_name, json_schema):
   def list():
       rows = db.query(f'select * from {table_name}')
       return {'body': rows}
 
   def get(id):
+      if not is_valid_id(id):
+        return invalid_id_response
       row = db.query_one(f'select * from {table_name} where id = %s', [id])
       if not row:
           return {'status': 404}
@@ -32,6 +40,8 @@ def make_model_api(table_name, json_schema):
           return unique_response(unique_error)
 
   def update(id, data):
+      if not is_valid_id(id):
+        return invalid_id_response
       schema_error = validate_schema(data, json_schema)
       if schema_error:
         return validate_response(schema_error)
@@ -45,6 +55,8 @@ def make_model_api(table_name, json_schema):
       return {'body': updated_doc}
 
   def delete(id):
+      if not is_valid_id(id):
+        return invalid_id_response
       row = db.query_one(f'select * from {table_name} where id = %s', [id])
       if not row:
           return {'status': 404}
