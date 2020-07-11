@@ -245,7 +245,7 @@ Deploy:
 zappa deploy production
 ```
 
-Zappa error: [Status check on the deployed lambda failed](https://github.com/Miserlou/Zappa/issues/1985), see also [Error loading psycopg2 module](https://github.com/Miserlou/Zappa/issues/800).
+Zappa error: [Status check on the deployed lambda failed](https://github.com/Miserlou/Zappa/issues/1985), see also [Error loading psycopg2 module](https://github.com/Miserlou/Zappa/issues/800). *NOTE: in order to get Zappa deployment to work I needed to replace the `psycopg2` package with [psycopg2-binary](https://pypi.org/project/psycopg2-binary) and "the binary package is a practical choice for development and testing but in production it is advised to use the package built from sources"*.
 
 Zappa debug logs:
 
@@ -253,9 +253,9 @@ Zappa debug logs:
 zappa tail
 ```
 
-Used the AWS console for lambda to set the DATABASE_URL [env variable](https://github.com/Miserlou/Zappa#setting-environment-variables) for the Heroku app.
+I used the AWS console for lambda to set the DATABASE_URL [env variable](https://github.com/Miserlou/Zappa#setting-environment-variables) for the Heroku app.
 
-Issue: the AWS lambda app is deployed at a URL like `https://ivjv8xpkkj.execute-api.eu-north-1.amazonaws.com/production` i.e. it is not deployed at the root path `/` but rather at `/production`. This breaks the swagger UI.
+Issue: the AWS lambda app is deployed at a URL like `https://ivjv8xpkkj.execute-api.eu-north-1.amazonaws.com/production` i.e. it is not deployed at the root path but at `/production`. This breaks the swagger UI.
 
 The API tests can be run against the deployed app like so:
 
