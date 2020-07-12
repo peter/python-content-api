@@ -11,7 +11,7 @@ Features:
 * Deployment to Heroku
 * Deployment with Zappa to AWS Lambda
 
-## Setting up Development Environment
+## Setting up the Development Environment
 
 Install packages in a virtual env:
 
@@ -24,7 +24,7 @@ pip install -r requirements.txt
 Create database:
 
 ```sh
-createdb -U postgres python-heroku-kitchensink
+createdb -U postgres python-rest-api
 python -c "import db; db.create_schema()"
 ```
 
@@ -109,11 +109,11 @@ python
 import db
 from datetime import datetime
 
-# list
-db.query("select * from urls")
-
 # create
 db.execute('INSERT INTO urls (url, created_at) VALUES (%s, %s)', ("http://www.aftonbladet.se", datetime.now()))
+
+# list
+db.query("select * from urls")
 
 # get
 db.query_one("select * from urls where id = %s", [1])
@@ -128,12 +128,12 @@ db.execute('DELETE from urls where id = %s', [1])
 Connecting with psql:
 
 ```
-psql -U postgres python-heroku-kitchensink
+psql -U postgres python-rest-api
 ```
 
 ## How this app was created
 
-Create and activate virtual python env for this project:
+Create and activate virtual python env:
 
 ```sh
 python -m venv venv
@@ -154,7 +154,7 @@ Create database:
 createdb python-heroku-starter
 ```
 
-Created script `bin/start-dev` and basic `app.py`.
+Create script `bin/start-dev` and basic `app.py`.
 
 Push files to git:
 
@@ -162,12 +162,6 @@ Push files to git:
 git add .
 git commit -m 'hello world'
 git push heroku master
-```
-
-Test the app:
-
-```sh
-heroku open
 ```
 
 ## Deployment with Heroku
@@ -183,14 +177,25 @@ echo 'web gunicorn app:app' > Procfile
 Create heroku app:
 
 ```sh
-heroku apps:create --region eu python-heroku-kitchensink
+heroku apps:create --region eu python-rest-api
 ```
-
 
 Deploy:
 
 ```sh
 git push heroku master
+```
+
+Add the [heroku-postgresql addon](https://elements.heroku.com/addons/heroku-postgresql):
+
+```sh
+heroku addons:create heroku-postgresql:hobby-dev
+```
+
+Test the app:
+
+```sh
+heroku open
 ```
 
 ## Deployment with Zappa to AWS Lambda
@@ -234,7 +239,7 @@ The `zappa init` command will create a `zappa_settings.json` file like this:
         "aws_region": "eu-north-1",
         "project_name": "python-heroku-k",
         "runtime": "python3.8",
-        "s3_bucket": "zappa-python-heroku-kitchensink"
+        "s3_bucket": "zappa-python-rest-api"
     }
 }
 ```

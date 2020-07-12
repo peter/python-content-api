@@ -5,7 +5,7 @@ import re
 import models.urls
 import models.fetches
 
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:@localhost/python-heroku-kitchensink')
+DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:@localhost/python-rest-api')
 conn = psycopg2.connect(DATABASE_URL)
 conn.autocommit = True
 
