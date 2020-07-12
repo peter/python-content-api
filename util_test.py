@@ -24,7 +24,6 @@ def test_get():
     assert get({'foo': 1}, ['bar']) == None
     assert get({'foo': 1}, ['bar'], 'the default') == 'the default'
     assert get({'foo': {'bar': 'hello'}}, ['foo', 'bar']) == 'hello'
-    assert get({'foo': {'bar': 'hello'}}, ['foo', 'bar']) == 'hello'
     assert get({'foo': {'bar': 'hello'}}, 'foo.bar') == 'hello'
     assert get(DictLike(**{'foo': {'bar': 'hello'}}), 'foo.bar') == 'hello'
     assert get(NotDictLike(**{'foo': {'bar': 'hello'}}), 'foo.bar') == None
