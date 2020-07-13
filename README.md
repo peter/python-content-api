@@ -229,7 +229,7 @@ pip install -r requirements.txt
 zappa init
 ```
 
-The `zappa init` command will create a `zappa_settings.json` file like this:
+The `zappa init` command will create a `zappa_settings.json` file like the following (where I think I needed to add the `aws_region` manually):
 
 ```json
 {
@@ -237,7 +237,7 @@ The `zappa init` command will create a `zappa_settings.json` file like this:
         "app_function": "app.app",
         "profile_name": "private",
         "aws_region": "eu-north-1",
-        "project_name": "python-heroku-k",
+        "project_name": "python-rest-api",
         "runtime": "python3.8",
         "s3_bucket": "zappa-python-rest-api"
     }
@@ -260,12 +260,18 @@ zappa tail
 
 I used the AWS console for lambda to set the DATABASE_URL [env variable](https://github.com/Miserlou/Zappa#setting-environment-variables) for the Heroku app.
 
-Issue: the AWS lambda app is deployed at a URL like `https://ivjv8xpkkj.execute-api.eu-north-1.amazonaws.com/production` i.e. it is not deployed at the root path but at `/production`. This breaks the swagger UI.
+Issue: the AWS lambda app is deployed at a URL like `https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production` i.e. it is not deployed at the root path but at `/production`. This breaks the swagger UI.
+
+To re-deploy zappa:
+
+```sh
+zappa update production
+```
 
 The API tests can be run against the deployed app like so:
 
 ```sh
-BASE_URL=https://ivjv8xpkkj.execute-api.eu-north-1.amazonaws.com/production python -m pytest -s app_test.py
+BASE_URL=https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production python -m pytest -s app_test.py
 ```
 
 ## Resources

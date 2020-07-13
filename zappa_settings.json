@@ -3,8 +3,8 @@
         "app_function": "app.app",
         "profile_name": "private",
         "aws_region": "eu-north-1",
-        "project_name": "python-heroku-k",
+        "project_name": "python-rest-api",
         "runtime": "python3.8",
-        "s3_bucket": "zappa-python-heroku-kitchensink"
+        "s3_bucket": "zappa-python-rest-api"
     }
 }
