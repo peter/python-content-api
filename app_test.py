@@ -1,10 +1,15 @@
 import os
+import json
 import requests
 import uuid
 import app
 from util import get
+from json_schema import validate_schema
 
 BASE_URL = os.getenv('BASE_URL', 'http://localhost:5001')
+
+with open('./swagger_meta_schema.json') as f:
+    swagger_meta_schema = json.loads(f.read())
 
 def uuid_hex():
     return uuid.uuid4().hex
@@ -15,81 +20,96 @@ def first(the_iterable, condition = lambda x: True):
             return i
 
 def test_crud():
-  list_url = f'{BASE_URL}/v1/urls'
-  doc = {'url': f'http://{uuid_hex()}.example.com'}
+    # Get swagger spec
+    response = requests.get(f'{BASE_URL}/v1/swagger.json')
+    assert response.status_code == 200
+    swagger = response.json()
+    assert validate_schema(swagger, swagger_meta_schema) == None
+    get_schema = get(swagger, 'paths./v1/urls/{id}.get.responses.200.content.application/json.schema')
+    list_schema = get(swagger, 'paths./v1/urls.get.responses.200.content.application/json.schema')
 
-  # Create with invalid schema
-  invalid_doc = {**doc, 'foo': 1}
-  response = requests.post(list_url, json=invalid_doc)
-  assert response.status_code == 400
-  assert get(response.json(), 'error.message')
+    list_url = f'{BASE_URL}/v1/urls'
+    doc = {'url': f'http://{uuid_hex()}.example.com'}
 
-  # Successful create
-  response = requests.post(list_url, json=doc)
-  assert response.status_code == 200
-  assert response.json()['url'] == doc['url']
-  assert response.json()['id']
-  assert response.json()['created_at']
-  doc['id'] = response.json()['id']
+    # Create with invalid schema
+    invalid_doc = {**doc, 'foo': 1}
+    response = requests.post(list_url, json=invalid_doc)
+    assert response.status_code == 400
+    assert get(response.json(), 'error.message')
 
-  get_url = f'{list_url}/{doc["id"]}'
+    # Successful create
+    response = requests.post(list_url, json=doc)
+    assert response.status_code == 200
+    assert validate_schema(response.json(), get_schema) == None
+    assert response.json()['url'] == doc['url']
+    assert response.json()['id']
+    assert response.json()['created_at']
+    doc['id'] = response.json()['id']
 
-  # Verify create with get
-  response = requests.get(get_url)
-  assert response.status_code == 200
-  assert response.json()['id'] == doc['id']
-  assert response.json()['url'] == doc['url']
+    get_url = f'{list_url}/{doc["id"]}'
 
-  # Get 404
-  get_url_404 = f'{list_url}/{doc["id"] + 100}'
-  response = requests.get(get_url_404)
-  assert response.status_code == 404
+    # Verify create with get
+    response = requests.get(get_url)
+    assert response.status_code == 200
+    assert validate_schema(response.json(), get_schema) == None
+    assert response.json()['id'] == doc['id']
+    assert response.json()['url'] == doc['url']
 
-  # Get invalid id
-  response = requests.get(f'{list_url}/fooobar')
-  assert response.status_code == 400
-  assert get(response.json(), 'error.message')
+    # Get 404
+    get_url_404 = f'{list_url}/{doc["id"] + 100}'
+    response = requests.get(get_url_404)
+    assert response.status_code == 404
 
-  # Create with url that already exists
-  response = requests.post(list_url, json={'url': doc['url']})
-  print(response.json())
-  assert response.status_code == 400
-  assert get(response.json(), 'error.message')
+    # Get invalid id
+    response = requests.get(f'{list_url}/fooobar')
+    assert response.status_code == 400
+    assert get(response.json(), 'error.message')
 
-  # List
-  response = requests.get(list_url)
-  assert response.status_code == 200
-  list_doc = first(response.json(), lambda d: d['id'] == doc['id'])
-  assert list_doc['url'] == doc['url']
+    # Create with url that already exists
+    response = requests.post(list_url, json={'url': doc['url']})
+    print(response.json())
+    assert response.status_code == 400
+    assert get(response.json(), 'error.message')
 
-  new_url = f'http://{uuid_hex()}.example.com'
+    # List
+    response = requests.get(list_url)
+    assert response.status_code == 200
+    assert validate_schema(response.json(), list_schema) == None
+    list_doc = first(response.json()['data'], lambda d: d['id'] == doc['id'])
+    assert list_doc['url'] == doc['url']
 
-  # Update 404
-  response = requests.put(get_url_404, json={'url': new_url})
-  assert response.status_code == 404
+    new_url = f'http://{uuid_hex()}.example.com'
 
-  # Update with invalid schema
-  response = requests.put(get_url, json={'url': 123})
-  assert response.status_code == 400
-  assert get(response.json(), 'error.message')
+    # Update 404
+    response = requests.put(get_url_404, json={'url': new_url})
+    assert response.status_code == 404
 
-  # Successful update
-  response = requests.put(get_url, json={'url': new_url})
-  assert response.status_code == 200
+    # Update with invalid schema
+    response = requests.put(get_url, json={'url': 123})
+    assert response.status_code == 400
+    assert get(response.json(), 'error.message')
 
-  # Verify update with get
-  response = requests.get(get_url)
-  assert response.status_code == 200
-  assert response.json()['url'] == new_url
+    # Successful update
+    response = requests.put(get_url, json={'url': new_url})
+    assert response.status_code == 200
+    assert validate_schema(response.json(), get_schema) == None
 
-  # Delete 404
-  response = requests.delete(get_url_404)
-  assert response.status_code == 404
+    # Verify update with get
+    response = requests.get(get_url)
+    assert response.status_code == 200
+    assert validate_schema(response.json(), get_schema) == None
+    assert response.json()['url'] == new_url
+    assert response.json()['updated_at']
 
-  # Successful delete
-  response = requests.delete(get_url)
-  assert response.status_code == 200
+    # Delete 404
+    response = requests.delete(get_url_404)
+    assert response.status_code == 404
 
-  # Verify delete with get 404
-  response = requests.get(get_url)
-  assert response.status_code == 404
+    # Successful delete
+    response = requests.delete(get_url)
+    assert response.status_code == 200
+    assert validate_schema(response.json(), get_schema) == None
+
+    # Verify delete with get 404
+    response = requests.get(get_url)
+    assert response.status_code == 404

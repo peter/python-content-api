@@ -1,10 +1,20 @@
 import os
+import json
+from datetime import date
 from flask import Flask, jsonify, make_response, request, redirect, send_from_directory
 from util import exception_body
 from swagger import generate_swagger
 from model_routes import get_model_routes
 
 app = Flask(__name__)
+
+class JsonEncoder(json.JSONEncoder):
+	def default(self, obj):
+		if isinstance(obj, date): # ISO date formating
+			return str(obj)
+		return json.JSONEncoder.default(self, obj)
+
+app.json_encoder = JsonEncoder
 
 def flask_response(result):
     return make_response(jsonify(result.get('body', {})), result.get('status', 200))

@@ -8,12 +8,24 @@ def swagger_parameters(route):
   return route['parameters'] if 'parameters' in route else []
 
 def swagger_request_body(route):
-  return route['requestBody'] if 'requestBody' in route else None
+  if not route['request_schema']:
+    return None
+  return {
+        'content': {
+            'application/json': {
+                'schema': route['request_schema']
+            }
+        }
+    }
 
 def swagger_responses(route):
-  responses = {
-        '200': {'description': 'success'},
-  }
+  responses = {'200': {'description': 'success'}}
+  if route['response_schema']:
+    responses['200']['content'] = {
+          'application/json': {
+              'schema': route['response_schema']
+          }
+      }
   if route['method'] == 'PUT' or route['method'] == 'POST':
     responses['400'] = {'description': 'validation failure'}
   return responses
@@ -32,7 +44,7 @@ def swagger_paths(model_routes):
       'parameters': swagger_parameters(route),
       'responses': swagger_responses(route)
     }
-    if 'requestBody' in route:
+    if 'request_schema' in route:
       swaggerPath['requestBody'] = swagger_request_body(route)
     paths[path][method] = swaggerPath
   return paths

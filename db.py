@@ -56,6 +56,7 @@ def insert(table_name, doc):
   values = [doc[k] for k in columns]
   interpolate_values = ['%s' for _ in values]
   sql = f'INSERT INTO {table_name} ({", ".join(columns)}) VALUES ({", ".join(interpolate_values)}) RETURNING id'
+  print(sql)
   cur = execute(sql, values)
   id = cur.fetchone()[0]
   return id
@@ -63,7 +64,8 @@ def insert(table_name, doc):
 def update(table_name, id, doc):
   columns = list(doc.keys())
   assert_valid_columns(columns)
-  interpolate_values = [f'SET {c} = %s' for c in columns]
+  interpolate_values = [f'{c} = %s' for c in columns]
   values = [doc[k] for k in columns] + [id]
-  sql = f'UPDATE {table_name} {" ".join(interpolate_values)} where id = %s'
+  sql = f'UPDATE {table_name} SET {", ".join(interpolate_values)} where id = %s'
+  print(sql)
   return execute(sql, values)

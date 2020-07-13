@@ -3,9 +3,12 @@ name = 'urls'
 json_schema = {
   'type': 'object',
   'properties': {
+      'id': {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}},
       'url': {'type': 'string'},
+      'created_at': {'type': 'string', 'x-meta': {'writable': False}},
+      'updated_at': {'type': 'string', 'x-meta': {'writable': False}}
   },
-  'required': ['url'],
+  'required': ['id', 'url', 'created_at'],
   'additionalProperties': False
 }
 

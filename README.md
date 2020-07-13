@@ -285,6 +285,7 @@ BASE_URL=https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production pyth
 * [Most Popular Python Packages](https://pypistats.org/top)
 * [Bottle Web Framework (alternative to Flask)](https://bottlepy.org/docs/dev/)
 * [Swagger UI](https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation)
+* [OpenAPI 3 Meta Schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas/v3.0)
 
 Serverless (AWS Lambda) deployment:
 
