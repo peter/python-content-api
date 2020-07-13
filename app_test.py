@@ -77,7 +77,7 @@ def test_crud():
   response = requests.put(get_url, json={'url': new_url})
   assert response.status_code == 200
 
-  # Verify update
+  # Verify update with get
   response = requests.get(get_url)
   assert response.status_code == 200
   assert response.json()['url'] == new_url
@@ -90,6 +90,6 @@ def test_crud():
   response = requests.delete(get_url)
   assert response.status_code == 200
 
-  # Verify delete
+  # Verify delete with get 404
   response = requests.get(get_url)
   assert response.status_code == 404
