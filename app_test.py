@@ -34,26 +34,25 @@ def test_crud():
 
   get_url = f'{list_url}/{doc["id"]}'
 
-  # Verify create
+  # Verify create with get
   response = requests.get(get_url)
   assert response.status_code == 200
   assert response.json()['id'] == doc['id']
   assert response.json()['url'] == doc['url']
 
-  # Create with url that already exists
-  response = requests.post(list_url, json={'url': doc['url']})
-  print(response.json())
-  assert response.status_code == 400
-  assert get(response.json(), 'error.message')
-
-  get_url_404 = f'{list_url}/{doc["id"] + 100}'
-
   # Get 404
+  get_url_404 = f'{list_url}/{doc["id"] + 100}'
   response = requests.get(get_url_404)
   assert response.status_code == 404
 
   # Get invalid id
   response = requests.get(f'{list_url}/fooobar')
+  assert response.status_code == 400
+  assert get(response.json(), 'error.message')
+
+  # Create with url that already exists
+  response = requests.post(list_url, json={'url': doc['url']})
+  print(response.json())
   assert response.status_code == 400
   assert get(response.json(), 'error.message')
 
