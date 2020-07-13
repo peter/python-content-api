@@ -14,7 +14,7 @@ def first(the_iterable, condition = lambda x: True):
         if condition(i):
             return i
 
-def test_crud_happy_path():
+def test_crud():
   list_url = f'{BASE_URL}/v1/urls'
   doc = {'url': f'http://{uuid_hex()}.example.com'}
 
