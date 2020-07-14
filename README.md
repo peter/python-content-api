@@ -2,12 +2,12 @@
 
 Features:
 
-* Postgresql access with psycopg2
-* Generic CRUD model API that is easy to adapt to Flask or serverless etc.
-* Flask CRUD API (a thin wrapper around the model API)
-* Validation with jsonschema
-* API testing with pytest and the request package
-* OpenAPI/Swagger documentation generated from model routes
+* Postgresql access with psycopg2 (see [db.py](db.py))
+* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py))
+* Flask CRUD API (a thin wrapper around the model API, see [app.py](app.py) and [model_routes.py](model_routes.py))
+* Validation with jsonschema (see [json_schema.py](json_schema.py))
+* API testing with pytest and the request package (see [app_test.py](app_test.py))
+* OpenAPI/Swagger documentation generated from model routes (see [swagger.py](swagger.py))
 * Deployment to Heroku
 * Deployment with Zappa to AWS Lambda
 
