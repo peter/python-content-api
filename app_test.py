@@ -156,6 +156,6 @@ def test_update_full_doc():
     assert response.json()['updated_at']
     assert omit(response.json(), ['updated_at']) == valid_doc
 
-def test_creat_empty():
+def test_create_empty():
     response = requests.post(list_url)
     assert response.status_code == 400
