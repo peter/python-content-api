@@ -5,7 +5,7 @@ from json_schema import validate_schema, validate_response
 from types import SimpleNamespace
 from util import exception_body
 from psycopg2.errors import UniqueViolation, ForeignKeyViolation
-from json_schema import writable_schema
+from json_schema import writable_schema, writable_doc
 
 def db_validation_response(db_error):
     return {'body': exception_body(db_error), 'status': 400}
@@ -64,6 +64,7 @@ def make_model_api(table_name, json_schema):
   def update(id, data):
       if not is_valid_id(id):
         return invalid_id_response
+      data = writable_doc(json_schema, data)
       schema_error = validate_schema(data, write_schema)
       if schema_error:
         return validate_response(schema_error)

@@ -31,3 +31,9 @@ def get(value, keys, default_value = None):
             result = default_value
             break
     return result
+
+def omit(d, keys):
+     return {k: d[k] for k in d if k not in keys}
+
+def pick(d, keys):
+     return {k: d[k] for k in d if k in keys}

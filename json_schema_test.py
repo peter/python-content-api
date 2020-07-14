@@ -1,4 +1,4 @@
-from json_schema import writable_schema
+from json_schema import writable_schema, writable_doc
 
 def test_writable_schema():
   schema = {
@@ -19,3 +19,21 @@ def test_writable_schema():
   assert writable_schema(None) == None
   assert writable_schema({'type': 'string'}) == {'type': 'string'}
   assert writable_schema(schema) == expected_schema
+
+def test_writable_doc():
+  schema = {
+    'type': 'object',
+    'properties': {
+      'id': {'type': 'integer', 'x-meta': {'writable': False}},
+      'title': {'type': 'string'}
+    },
+    'required': ['id', 'title']
+  }
+  doc = {
+      'id': 'the-id',
+      'title': 'the title'
+  }
+  expected_doc = {
+      'title': 'the title'
+  }
+  assert writable_doc(schema, doc) == expected_doc

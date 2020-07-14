@@ -22,6 +22,10 @@ def writable_schema(schema):
     'required': (schema['required'] and get_required(schema['required']))
   }
 
+def writable_doc(schema, doc):
+  unwritable_keys = [k for k, v in schema['properties'].items() if not is_writable(v)]
+  return {k: v for k, v in doc.items() if k not in unwritable_keys}
+
 def validate_response(schema_error):
   body = {'error': {'message': schema_error.message, 'schema': schema_error.schema}}
   return {'status': 400, 'body': body}
