@@ -159,3 +159,9 @@ def test_update_full_doc():
 def test_create_empty():
     response = requests.post(list_url)
     assert response.status_code == 400
+
+def test_create_invalid_url():
+    doc = get_valid_doc()
+    invalid_doc = {**doc, 'url': 'foobar'}
+    response = requests.post(list_url, json=invalid_doc)
+    assert response.status_code == 400

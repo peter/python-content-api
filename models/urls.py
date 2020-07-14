@@ -4,7 +4,7 @@ json_schema = {
   'type': 'object',
   'properties': {
       'id': {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}},
-      'url': {'type': 'string'},
+      'url': {'type': 'string', 'format': 'uri', 'pattern': '^https?://.+$'},
       'created_at': {'type': 'string', 'x-meta': {'writable': False}},
       'updated_at': {'type': 'string', 'x-meta': {'writable': False}}
   },

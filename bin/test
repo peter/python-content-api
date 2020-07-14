@@ -2,7 +2,7 @@
 
 bin/start-test &
 
-pytest -vv
+pytest -s -vv
 
 # https://spin.atomicobject.com/2017/08/24/start-stop-bash-background-process/
 kill 0
