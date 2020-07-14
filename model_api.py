@@ -1,7 +1,7 @@
 import db
 import re
 from datetime import datetime
-from json_schema import validate_schema, validate_response
+from json_schema import validate_schema, schema_error_response
 from types import SimpleNamespace
 from util import exception_body
 from psycopg2.errors import UniqueViolation, ForeignKeyViolation
@@ -52,7 +52,7 @@ def make_model_api(table_name, json_schema):
   def create(data):
       schema_error = validate_schema(data, write_schema)
       if schema_error:
-        return validate_response(schema_error)
+        return schema_error_response(schema_error)
       doc = {**data, 'created_at': datetime.now()}
       try:
         id = db.insert(table_name, doc)
@@ -67,7 +67,7 @@ def make_model_api(table_name, json_schema):
       data = writable_doc(json_schema, data)
       schema_error = validate_schema(data, write_schema)
       if schema_error:
-        return validate_response(schema_error)
+        return schema_error_response(schema_error)
       try:
         doc = {**data, 'updated_at': datetime.now()}
         db.update(table_name, id, doc)
