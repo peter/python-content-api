@@ -36,4 +36,6 @@ def test_writable_doc():
   expected_doc = {
       'title': 'the title'
   }
+  assert writable_doc(schema, None) == None
+  assert writable_doc(None, doc) == doc
   assert writable_doc(schema, doc) == expected_doc

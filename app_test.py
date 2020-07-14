@@ -139,6 +139,10 @@ def test_update_full_doc():
     response = requests.put(get_url, json=invalid_doc)
     assert response.status_code == 400
 
+    # Empty update
+    response = requests.put(get_url)
+    assert response.status_code == 400
+
     # Successful update with full doc
     valid_doc = {**doc, 'url': generate_url()}
     print(valid_doc)
@@ -151,3 +155,7 @@ def test_update_full_doc():
     assert response.status_code == 200
     assert response.json()['updated_at']
     assert omit(response.json(), ['updated_at']) == valid_doc
+
+def test_creat_empty():
+    response = requests.post(list_url)
+    assert response.status_code == 400

@@ -23,6 +23,8 @@ def writable_schema(schema):
   }
 
 def writable_doc(schema, doc):
+  if not doc or not schema or not 'properties' in schema:
+    return doc
   unwritable_keys = [k for k, v in schema['properties'].items() if not is_writable(v)]
   return {k: v for k, v in doc.items() if k not in unwritable_keys}
 
