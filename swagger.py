@@ -37,9 +37,9 @@ def swagger_paths(model_routes):
     if not path in paths:
       paths[path] = {}
     method = route['method'].lower()
-    summary = f'{route["handler"].__name__} {route["model"].name}'
+    summary = f'{route["handler"].__name__} {route["model"]}'
     swaggerPath = {
-      'tags': [route['model'].name],
+      'tags': [route['model']],
       'summary': summary,
       'parameters': swagger_parameters(route),
       'responses': swagger_responses(route)

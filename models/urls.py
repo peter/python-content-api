@@ -2,6 +2,7 @@ import sys
 import requests
 from util import invalid_response
 from model_api import make_model_api_with_validation
+from model_routes import get_model_routes
 
 name = 'urls'
 
@@ -40,3 +41,5 @@ def validate_url(data):
     return f'Could not fetch url {data["url"]}: {error}'
 
 api = make_model_api_with_validation(name, json_schema, validate=validate_url)
+
+routes = get_model_routes(name, json_schema, api)

@@ -1,4 +1,5 @@
 from model_api import make_model_api
+from model_routes import get_model_routes
 
 name = 'fetches'
 
@@ -26,3 +27,5 @@ db_schema = f'''
 db_migrations = []
 
 api = make_model_api(name, json_schema)
+
+routes = get_model_routes(name, json_schema, api)

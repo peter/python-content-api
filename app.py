@@ -4,7 +4,8 @@ from datetime import date
 from flask import Flask, jsonify, make_response, request, redirect, send_from_directory
 from util import exception_body
 from swagger import generate_swagger
-from model_routes import get_model_routes
+import models.urls
+import models.fetches
 
 app = Flask(__name__)
 
@@ -44,13 +45,15 @@ def make_flask_routes(model_routes):
             return flask_response(handler(id))
         flask_handler = locals()[handler.__name__]
         # See: https://stackoverflow.com/questions/17256602/assertionerror-view-function-mapping-is-overwriting-an-existing-endpoint-functi
-        flask_handler.__name__ = f'{route["model"].name}_{handler.__name__}'
+        flask_handler.__name__ = f'{route["model"]}_{handler.__name__}'
         return flask_handler
     for route in model_routes:
         app.route(route['path'], methods = [route['method']])(get_flask_handler(route))
 
-model_routes = get_model_routes()
-
+MODELS = [models.urls, models.fetches]
+model_routes = []
+for model in MODELS:
+    model_routes += model.routes
 make_flask_routes(model_routes)
 
 @app.route('/')
