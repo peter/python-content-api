@@ -1,5 +1,8 @@
 import re
 
+def invalid_response(message):
+  return {'body': {'error': {'message': message}}, 'status': 400}
+
 def exception_body(exception):
   return {
         'error': {
@@ -7,6 +10,9 @@ def exception_body(exception):
             'message': (exception.args[0] if exception.args else None)
         }
     }
+
+def exception_response(error):
+    return {'body': exception_body(error), 'status': 400}
 
 def get(value, keys, default_value = None):
     '''

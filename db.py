@@ -2,14 +2,14 @@ import psycopg2
 import psycopg2.extras
 import os
 import re
-import models.urls
-import models.fetches
 
 DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:@localhost/python-rest-api')
 conn = psycopg2.connect(DATABASE_URL)
 conn.autocommit = True
 
 def create_schema():
+  import models.urls
+  import models.fetches
   tables = [
     models.urls.db_schema,
     models.fetches.db_schema

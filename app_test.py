@@ -21,11 +21,8 @@ def first(the_iterable, condition = lambda x: True):
         if condition(i):
             return i
 
-def generate_url():
-    return f'http://{uuid_hex()}.example.com'
-
 def get_valid_doc():
-    return {'url': generate_url()}
+    return {'url': 'https://github.com/peter/python-rest-api'}
 
 def test_crud():
     # Get swagger spec
@@ -85,7 +82,7 @@ def test_crud():
     list_doc = first(response.json()['data'], lambda d: d['id'] == doc['id'])
     assert list_doc['url'] == doc['url']
 
-    new_url = generate_url()
+    new_url = 'https://github.com/peter/python-rest-api/blob/master/app.py'
 
     # Update 404
     response = requests.put(get_url_404, json={'url': new_url})
@@ -144,7 +141,7 @@ def test_update_full_doc():
     assert response.status_code == 400
 
     # Successful update with full doc
-    valid_doc = {**doc, 'url': generate_url()}
+    valid_doc = {**doc, 'url': 'https://github.com/peter/python-rest-api/blob/master/app.py'}
     print(valid_doc)
     response = requests.put(get_url, json=valid_doc)
     print(response.json())
@@ -156,12 +153,22 @@ def test_update_full_doc():
     assert response.json()['updated_at']
     assert omit(response.json(), ['updated_at']) == valid_doc
 
+    # Successful delete
+    response = requests.delete(get_url)
+    assert response.status_code == 200
+
 def test_create_empty():
     response = requests.post(list_url)
     assert response.status_code == 400
 
 def test_create_invalid_url():
     doc = get_valid_doc()
+
     invalid_doc = {**doc, 'url': 'foobar'}
     response = requests.post(list_url, json=invalid_doc)
+    assert response.status_code == 400
+
+    invalid_doc = {**doc, 'url': 'https://github.com/peter/python-rest-api/foobar'}
+    response = requests.post(list_url, json=invalid_doc)
+    print(response.json())
     assert response.status_code == 400

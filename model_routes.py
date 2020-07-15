@@ -1,4 +1,3 @@
-from model_api import make_model_api
 import models.urls
 import models.fetches
 from json_schema import writable_schema
@@ -20,7 +19,6 @@ id_parameter = {
 def get_model_routes(models = MODELS):
     routes = []
     for model in models:
-        model_api = make_model_api(model.name, model.json_schema)
         write_schema = writable_schema(model.json_schema)
         list_path = f'/v1/{model.name}'
         get_path = f'/v1/{model.name}/<id>'
@@ -28,48 +26,48 @@ def get_model_routes(models = MODELS):
             {
                 'method': 'GET',
                 'path': list_path,
-                'handler': model_api.list,
+                'handler': model.api.list,
                 'model': model,
-                'response_schema': model_api.response_schema('list')
+                'response_schema': model.api.response_schema('list')
             },
             {
                 'method': 'GET',
                 'path': get_path,
-                'handler': model_api.get,
+                'handler': model.api.get,
                 'model': model,
                 'parameters': [
                     id_parameter
                 ],
-                'response_schema': model_api.response_schema('get')
+                'response_schema': model.api.response_schema('get')
             },
             {
                 'method': 'POST',
                 'path': list_path,
-                'handler': model_api.create,
+                'handler': model.api.create,
                 'model': model,
                 'request_schema': write_schema,
-                'response_schema': model_api.response_schema('create')
+                'response_schema': model.api.response_schema('create')
             },
             {
                 'method': 'PUT',
                 'path': get_path,
-                'handler': model_api.update,
+                'handler': model.api.update,
                 'model': model,
                 'parameters': [
                     id_parameter,
                 ],
                 'request_schema': write_schema,
-                'response_schema': model_api.response_schema('update')
+                'response_schema': model.api.response_schema('update')
             },
             {
                 'method': 'DELETE',
                 'path': get_path,
-                'handler': model_api.delete,
+                'handler': model.api.delete,
                 'model': model,
                 'parameters': [
                     id_parameter
                 ],
-                'response_schema': model_api.response_schema('delete')
+                'response_schema': model.api.response_schema('delete')
             }
         ]
     return routes

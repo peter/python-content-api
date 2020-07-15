@@ -1,3 +1,5 @@
+from model_api import make_model_api
+
 name = 'fetches'
 
 json_schema = {
@@ -22,3 +24,5 @@ db_schema = f'''
 '''
 
 db_migrations = []
+
+api = make_model_api(name, json_schema)
