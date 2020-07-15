@@ -62,9 +62,10 @@ def make_model_api(table_name, json_schema,
       schema_error = validate_schema(data, write_schema)
       if schema_error:
         return schema_error_response(schema_error)
-      doc = {**data, 'created_at': datetime.now()}
+      if 'created_at' in json_schema['properties']:
+        data = {**data, 'created_at': datetime.now()}
       try:
-        id = db.insert(table_name, doc)
+        id = db.insert(table_name, data)
         created_doc = db.query_one(f'select * from {table_name} where id = %s', [id])
         return {'body': remove_none(created_doc)}
       except (UniqueViolation, ForeignKeyViolation) as db_error:
@@ -79,8 +80,9 @@ def make_model_api(table_name, json_schema,
       if schema_error:
         return schema_error_response(schema_error)
       try:
-        doc = {**data, 'updated_at': datetime.now()}
-        db.update(table_name, id, doc)
+        if 'updated_at' in json_schema['properties']:
+          data = {**data, 'updated_at': datetime.now()}
+        db.update(table_name, id, data)
       except (UniqueViolation, ForeignKeyViolation) as db_error:
           return exception_response(db_error)
       updated_doc = db.query_one(f'select * from {table_name} where id = %s', [id])

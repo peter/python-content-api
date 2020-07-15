@@ -7,21 +7,6 @@ DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:@localhost/
 conn = psycopg2.connect(DATABASE_URL)
 conn.autocommit = True
 
-def create_schema():
-  import models.urls
-  import models.fetches
-  tables = [
-    models.urls.db_schema,
-    models.fetches.db_schema
-  ]
-  for table in tables:
-    conn.cursor().execute(table)
-
-def migrate_schema():
-  # TODO: create db_migrations table if not exists
-  # TODO: For each model, run any migrations not run (wrapped in a try/catch)
-  pass
-
 def execute(*args):
     cur = conn.cursor()
     cur.execute(*args)

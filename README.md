@@ -3,7 +3,7 @@
 Features:
 
 * Postgresql access with psycopg2 (see [db.py](db.py))
-* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and the example model [models/urls.py](models/urls.py))
+* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py) as well as [models/__init__.py](models/__init__.py))
 * Flask CRUD API (a thin wrapper around the model API, see [app.py](app.py) and [model_routes.py](model_routes.py))
 * Validation with jsonschema (see [json_schema.py](json_schema.py))
 * API testing with pytest and the request package (see [app_test.py](app_test.py))
@@ -29,7 +29,7 @@ Create database:
 
 ```sh
 createdb -U postgres python-rest-api
-python -c "import db; db.create_schema()"
+python -c "import models; models.create_schema()"
 ```
 
 Start server:
