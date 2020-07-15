@@ -110,3 +110,27 @@ def make_model_api(table_name, json_schema,
   for name, fn in api.items():
     fn.__name__ = name
   return SimpleNamespace(**api)
+
+def empty_validate(data):
+  return None
+
+def make_model_api_with_validation(name, json_schema, validate=empty_validate):
+  def create_with_validation(_create):
+    def create(data):
+      invalid_message = validate(data)
+      if invalid_message:
+        return invalid_response(invalid_message)
+      return _create(data)
+    return create
+
+  def update_with_validation(_update):
+    def update(id, data):
+      invalid_message = validate(data)
+      if invalid_message:
+        return invalid_response(invalid_message)
+      return _update(id, data)
+    return update
+
+  return make_model_api(name, json_schema,
+    create_decorator=create_with_validation,
+    update_decorator=update_with_validation)
