@@ -1,8 +1,3 @@
-from model_api import make_model_api
-from model_routes import get_model_routes
-
-name = 'fetches'
-
 json_schema = {
   'type': 'object',
   'properties': {
@@ -16,7 +11,7 @@ json_schema = {
 }
 
 db_schema = f'''
-  CREATE TABLE {name} (
+  CREATE TABLE fetches (
     id serial PRIMARY KEY,
     url_id integer not null references urls(id),
     data text NOT NULL,
@@ -25,7 +20,3 @@ db_schema = f'''
 '''
 
 db_migrations = []
-
-api = make_model_api(name, json_schema)
-
-routes = get_model_routes(name, json_schema, api)
