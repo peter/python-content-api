@@ -18,5 +18,3 @@ db_schema = f'''
     created_at TIMESTAMP NOT NULL
   )
 '''
-
-db_migrations = []
