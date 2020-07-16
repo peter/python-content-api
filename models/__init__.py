@@ -13,9 +13,10 @@ ORDERED_MODEL_NAMES = [
 def set_model_defaults(name, model):
   if not 'name' in dir(model):
     setattr(model, 'name', name)
-  if not 'api' in dir(model):
-    setattr(model, 'api', make_model_api(name, model.json_schema))
   if not 'routes' in dir(model):
+    if not ('db_schema' in dir(model) and 'json_schema' in dir(model)):
+      raise Exception(f'You need to specify db_schema and json_schema for model {name}')
+    setattr(model, 'api', make_model_api(name, model.json_schema))
     setattr(model, 'routes', get_model_routes(name, model.json_schema, model.api))
   return model
 
