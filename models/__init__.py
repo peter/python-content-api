@@ -3,7 +3,7 @@ import os
 import importlib
 import db
 from model_api import make_model_api
-from model_routes import get_model_routes
+from model_routes import get_model_routes, default_route_names
 
 ORDERED_MODEL_NAMES = [
   'urls',
@@ -17,7 +17,8 @@ def set_model_defaults(name, model):
     if not ('db_schema' in dir(model) and 'json_schema' in dir(model)):
       raise Exception(f'You need to specify db_schema and json_schema for model {name}')
     setattr(model, 'api', make_model_api(name, model.json_schema))
-    setattr(model, 'routes', get_model_routes(name, model.json_schema, model.api))
+    route_names = model.route_names if 'route_names' in dir(model) else default_route_names
+    setattr(model, 'routes', get_model_routes(name, model.json_schema, model.api, route_names=route_names))
   return model
 
 def all_models():

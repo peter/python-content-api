@@ -14,3 +14,5 @@ db_schema = f'''
     email text UNIQUE NOT NULL
   )
 '''
+
+route_names = ['list', 'get', 'create']

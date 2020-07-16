@@ -9,11 +9,13 @@ id_parameter = {
     }
 }
 
-def get_model_routes(name, json_schema, api):
+default_route_names = ['list', 'get', 'create', 'update', 'delete']
+
+def get_model_routes(name, json_schema, api, route_names = default_route_names):
     write_schema = writable_schema(json_schema)
     list_path = f'/v1/{name}'
     get_path = f'/v1/{name}/<id>'
-    return [
+    all_routes = [
         {
             'method': 'GET',
             'path': list_path,
@@ -61,3 +63,4 @@ def get_model_routes(name, json_schema, api):
             'response_schema': api.response_schema('delete')
         }
     ]
+    return [r for r in all_routes if r['handler'].__name__ in route_names]
