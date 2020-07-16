@@ -20,7 +20,7 @@ def swagger_request_body(route):
 
 def swagger_responses(route):
   responses = {'200': {'description': 'success'}}
-  if route['response_schema']:
+  if 'response_schema' in route:
     responses['200']['content'] = {
           'application/json': {
               'schema': route['response_schema']
