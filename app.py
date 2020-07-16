@@ -32,17 +32,12 @@ def send_static(path):
 def make_flask_routes(model_routes):
     def get_flask_handler(route):
         handler = route['handler']
-        def list():
-            return flask_response(handler())
-        def get(id):
-            return flask_response(handler(id))
-        def create():
-            return flask_response(handler(request.json))
-        def update(id):
-            return flask_response(handler(id, request.json))
-        def delete(id):
-            return flask_response(handler(id))
-        flask_handler = locals()[handler.__name__]
+        def flask_handler(**kwargs):
+            return flask_response(handler(
+                path_params=kwargs,
+                data=request.json,
+                headers=dict(request.headers),
+                query=dict(request.args)))
         # See: https://stackoverflow.com/questions/17256602/assertionerror-view-function-mapping-is-overwriting-an-existing-endpoint-functi
         flask_handler.__name__ = f'{route["model"]}_{handler.__name__}'
         return flask_handler

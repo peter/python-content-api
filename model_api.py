@@ -44,12 +44,13 @@ def make_model_api(table_name, json_schema,
       return json_schema
 
   @list_decorator
-  def list():
+  def list(**kwargs):
       docs = [remove_none(doc) for doc in db.query(f'select * from {table_name}')]
       return {'body': {'data': docs}}
 
   @get_decorator
-  def get(id):
+  def get(path_params, **kwargs):
+      id = path_params['id']
       if not is_valid_id(id):
         return invalid_id_response
       doc = db.query_one(f'select * from {table_name} where id = %s', [id])
@@ -58,7 +59,7 @@ def make_model_api(table_name, json_schema,
       return {'body': remove_none(doc)}
 
   @create_decorator
-  def create(data):
+  def create(data, **kwargs):
       schema_error = validate_schema(data, write_schema)
       if schema_error:
         return schema_error_response(schema_error)
@@ -72,7 +73,8 @@ def make_model_api(table_name, json_schema,
           return exception_response(db_error)
 
   @update_decorator
-  def update(id, data):
+  def update(path_params, data, **kwargs):
+      id = path_params['id']
       if not is_valid_id(id):
         return invalid_id_response
       data = writable_doc(json_schema, data)
@@ -91,7 +93,8 @@ def make_model_api(table_name, json_schema,
       return {'body': remove_none(updated_doc)}
 
   @delete_decorator
-  def delete(id):
+  def delete(path_params, **kwargs):
+      id = path_params['id']
       if not is_valid_id(id):
         return invalid_id_response
       doc = db.query_one(f'select * from {table_name} where id = %s', [id])
@@ -118,19 +121,19 @@ def empty_validate(data):
 
 def make_model_api_with_validation(name, json_schema, validate=empty_validate):
   def create_with_validation(_create):
-    def create(data):
+    def create(data, **kwargs):
       invalid_message = validate(data)
       if invalid_message:
         return invalid_response(invalid_message)
-      return _create(data)
+      return _create(data, **kwargs)
     return create
 
   def update_with_validation(_update):
-    def update(id, data):
+    def update(path_params, data, **kwargs):
       invalid_message = validate(data)
       if invalid_message:
         return invalid_response(invalid_message)
-      return _update(id, data)
+      return _update(path_params, data, **kwargs)
     return update
 
   return make_model_api(name, json_schema,
