@@ -15,10 +15,10 @@ Features:
 
 [python-heroku-rest-api.herokuapp.com](https://python-heroku-rest-api.herokuapp.com)
 
-## Model Defaults
+## Model Definitions
 
 * If a model doesn't specify a `routes` attribute then it will get the five default CRUD routes (`list`, `get`, `create`, `update`, `delete`) based on the models `json_schema` and `db_schema` attributes (those need to be present). For examples see [models/fetches.py](models/fetches.py). If you only want to expose a subset of the CRUD routes for a model you can set the `route_names` attribute, see [models/users.py](models/users.py)
-* By specifying the `routes` property for a model you can customize the default CRUD routes, for example to add custom validation, see [models/urls.py](models/urls.py). You are also free to set any types of routes that you need for the model and the `json_schema` and `db_schema` properties are not required in this case. You may for example have a model that uses a different database or no database at all, see [models/articles.py](models/articles.py) for a simple example. The `routes` property needs to be a list of dictionaries with the keys `method`, `path`, `handler`, and `model` (the name of the model), and the optional keys `request_schema` and `response_schema`, see [model_routes.py](model_routes.py)
+* By specifying the `routes` property for a model you can customize the default CRUD routes, for example to add custom validation, see [models/urls.py](models/urls.py). You are also free to set any types of routes that you need for the model and the `json_schema` and `db_schema` properties are not required in this case. You may for example have a model that uses a different database or no database at all, see [models/articles.py](models/articles.py). The `routes` property needs to be a list of dictionaries with the keys `method`, `path`, `handler`, and `model` (the name of the model), and the optional keys `request_schema` and `response_schema`, see [model_routes.py](model_routes.py)
 
 ## Setting up the Development Environment
 
