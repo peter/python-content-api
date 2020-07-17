@@ -17,7 +17,10 @@ def bottle_response(model_response):
     headers = {'Content-type': 'application/json'}
     status = model_response.get('status', 200)
     body = json.dumps(model_response.get('body', {}), indent=4, cls=JsonEncoder)
-    return HTTPResponse(status=status, body=body, headers=headers)
+    response.status = status
+    response.set_header('Content-Type', 'application/json')
+    return body
+    #return HTTPResponse(status=status, body=body, headers=headers)
 
 def make_bottle_routes(model_routes):
     pass
@@ -51,5 +54,5 @@ def redirect_to_swagger():
 
 if __name__ == '__main__':
   # Development server
-  port = os.environ.get('PORT', 5000)
-  run(app, host='localhost', port=port, reloader=True)
+  port = int(os.environ.get('PORT', 5000))
+  run(app, host='localhost', port=port, debug=True, reloader=True)
