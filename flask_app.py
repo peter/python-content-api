@@ -42,7 +42,6 @@ def make_flask_routes(model_routes):
 
 @app.route('/static/<path:path>')
 def send_static(path):
-    print(f'pm debug send_static path={path}')
     return send_from_directory('./static', path)
 
 model_routes = all_model_routes()
