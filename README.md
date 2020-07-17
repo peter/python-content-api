@@ -4,7 +4,7 @@ Features:
 
 * Postgresql access with psycopg2 (see [db.py](db.py))
 * Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py) as well as [models/__init__.py](models/__init__.py))
-* Flask CRUD API (a thin wrapper around the model API, see [app.py](app.py) and [model_routes.py](model_routes.py))
+* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py))
 * Validation with jsonschema (see [json_schema.py](json_schema.py))
 * API testing with pytest and the request package (see [app_test.py](app_test.py))
 * OpenAPI/Swagger documentation generated from model routes (see [swagger.py](swagger.py))

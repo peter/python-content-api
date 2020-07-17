@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-FLASK_DEBUG=1 \
-FLASK_APP=app.py \
-python -m flask run
+if [ "$FRAMEWORK" = "bottle" ]; then
+  python bottle_app.py
+else
+  FLASK_DEBUG=1 FLASK_APP=app.py python -m flask run
+fi

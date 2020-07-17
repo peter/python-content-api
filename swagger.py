@@ -55,7 +55,7 @@ def generate_swagger(model_routes):
     'info': {
       'description': 'An example Python REST API on Heroku with postgresql, Flask, JSON schema validation etc.',
       'version': '1.0.0',
-      'title': 'Example Python Heroku CRUD API'
+      'title': 'Example Python REST API'
     },
     'paths': swagger_paths(model_routes)
   }
