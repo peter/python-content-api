@@ -50,7 +50,7 @@ def swagger_json():
 
 @app.route('/')
 def redirect_to_swagger():
-    return redirect('/static/swagger/index.html')
+    return redirect('/static/index.html')
 
 if __name__ == '__main__':
   # Development server

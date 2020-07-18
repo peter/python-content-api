@@ -49,7 +49,7 @@ make_flask_routes(model_routes)
 
 @app.route('/')
 def redirect_to_swagger():
-    return redirect('/static/swagger/index.html')
+    return redirect('/static/index.html')
 
 @app.route('/v1/swagger.json')
 def swagger_json():

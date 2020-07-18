@@ -2,9 +2,10 @@
 
 Features:
 
+* Minimal codebase - around 500 lines of Python (see [bin/loc](bin/loc))
 * Postgresql access with psycopg2 (see [db.py](db.py))
 * Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py) as well as [models/__init__.py](models/__init__.py))
-* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py))
+* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is preliminary support for the Bottle framework in [bottle_app.py](bottle_app.py) but unfortunately I had issues getting Bottle to work reliably (it would spawn multiple processes and POST requests from Python would hang etc.)
 * Validation with jsonschema (see [json_schema.py](json_schema.py))
 * API testing with pytest and the request package (see [app_test.py](app_test.py))
 * OpenAPI/Swagger documentation generated from model routes (see [swagger.py](swagger.py))
@@ -307,6 +308,8 @@ BASE_URL=https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production pyth
 * [Bottle Web Framework (alternative to Flask)](https://bottlepy.org/docs/dev/)
 * [Swagger UI](https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation)
 * [OpenAPI 3 Meta Schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas/v3.0)
+* [ReDoc - API Console feature request](https://github.com/Redocly/redoc/issues/53)
+* [Redoc.ly Developer Portal (Commercial)](https://redoc.ly/developer-portal)
 
 Serverless (AWS Lambda) deployment:
 
