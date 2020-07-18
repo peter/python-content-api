@@ -25,7 +25,7 @@ routes = [
         'in': 'query',
         'name': 'q',
         'description': 'Search query to filter by',
-        'schema': {'type': 'string'}
+        'schema': {'type': 'string', 'minLength': 2}
       }
     ]
   }

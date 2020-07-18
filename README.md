@@ -4,7 +4,7 @@ Features:
 
 * Minimal codebase - around 500 lines of Python (see [bin/loc](bin/loc))
 * Postgresql access with psycopg2 (see [db.py](db.py))
-* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py) as well as [models/__init__.py](models/__init__.py))
+* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and [models/__init__.py](models/__init__.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
 * Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is preliminary support for the Bottle framework in [bottle_app.py](bottle_app.py) but unfortunately I had issues getting Bottle to work reliably (it would spawn multiple processes and POST requests from Python would hang etc.)
 * Validation with jsonschema (see [json_schema.py](json_schema.py))
 * API testing with pytest and the request package (see [app_test.py](app_test.py))
@@ -27,17 +27,22 @@ Some popular alternatives for building an API like this in Python with framework
 
 [python-heroku-rest-api.herokuapp.com](https://python-heroku-rest-api.herokuapp.com)
 
-## Model Definitions
+## Model and Route Definitions
 
 * If a model doesn't specify a `routes` attribute then it will get the five default CRUD routes (`list`, `get`, `create`, `update`, `delete`) based on the models `json_schema` and `db_schema` attributes (those need to be present). For examples see [models/fetches.py](models/fetches.py). If you only want to expose a subset of the CRUD routes for a model you can set the `route_names` attribute, see [models/users.py](models/users.py)
 * By specifying the `routes` property for a model you can customize the default CRUD routes, for example to add custom validation, see [models/urls.py](models/urls.py). You are also free to set any types of routes that you need for the model and the `json_schema` and `db_schema` properties are not required in this case. You may for example have a model that uses a different database or no database at all, see [models/articles.py](models/articles.py). The `routes` property needs to be a list of dictionaries with the keys `method`, `path`, `handler`, and the optional keys `request_schema` (JSON schema of request body), `response_schema` (JSON schema of response body), and `parameters` (a list of [OpenAPI parameters](https://swagger.io/docs/specification/describing-parameters/) - see [models/articles.py](models/articles.py)). The default CRUD routes are defined in [model_routes.py](model_routes.py).
 
-Route handlers will receive the following arguments:
+A route `handler` will receive the following arguments:
 
 * `path_params` - dict with parameters from the path, such as `id` for `/v1/urls/<id>`
 * `data` - dict with body data for `POST` and `PUT` requests
 * `headers` - dict with HTTP headers
 * `query` - dict with query parameters, such as `{'page': 2}` for `/v1/articles?page=2`
+
+What's usually referred to as `middleware` in web frameworks can be achieved
+by adding [Python decorators](https://www.programiz.com/python-programming/decorator) to
+a `handler`, see for example how this is done in [model_api.py](model_api.py) and
+in [models/__init__.py](models/__init__.py).
 
 ## Setting up the Development Environment
 
