@@ -11,6 +11,11 @@ Features:
 * Deployment to Heroku
 * Deployment with Zappa to AWS Lambda
 
+TODO:
+
+* list endpoint should have page and limit params and filter param
+* https://www.django-rest-framework.org
+
 ## Demo App
 
 [python-heroku-rest-api.herokuapp.com](https://python-heroku-rest-api.herokuapp.com)
