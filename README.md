@@ -14,8 +14,13 @@ Features:
 
 TODO:
 
-* list endpoint should have page and limit params and filter param
-* https://www.django-rest-framework.org
+* List endpoint should support page, limit, and filter params
+* Support https://www.django-rest-framework.org
+
+Some popular alternatives for building an API like this in Python with various frameworks:
+
+* [Flask](https://flask.palletsprojects.com) + [SQLAlchemy](https://www.sqlalchemy.org/) + (possibly) [OpenAPI-SQLAlchemy](https://pypi.org/project/OpenAPI-SQLAlchemy)
+* [Django REST Framework](https://www.django-rest-framework.org/)
 
 ## Demo App
 
