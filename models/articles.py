@@ -13,7 +13,6 @@ routes = [
   {
     'method': 'GET',
     'path': '/v1/articles',
-    'handler': list_articles,
-    'model': 'articles'
+    'handler': list_articles
   }
 ]
