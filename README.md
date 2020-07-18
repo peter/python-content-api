@@ -1,4 +1,4 @@
-# Example Python Heroku CRUD API
+# Example Python REST API
 
 Features:
 
