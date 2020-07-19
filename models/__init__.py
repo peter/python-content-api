@@ -28,11 +28,13 @@ def parameters_schema(parameters, source):
 def coerce_values(values, schema):
   def coerce_value(value, value_schema):
     value_type = get(value_schema, 'type')
-    if not value_type:
+    if not value_type or value is None:
       return value
     try:
-      if value_type == 'integer':
+      if value_type == 'integer' or (value_type == 'number' and '.' not in value):
         return int(value)
+      elif value_type == 'number' and '.' in value:
+        return float(value)
       elif value_type == 'boolean':
         return value not in ['0', 'false', 'FALSE', 'f']
       else:
