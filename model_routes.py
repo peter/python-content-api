@@ -19,6 +19,7 @@ def get_model_routes(name, json_schema, api, route_names = default_route_names):
         {
             'method': 'GET',
             'path': list_path,
+            'name': 'list',
             'handler': api.list,
             'model_name': name,
             'response_schema': api.response_schema('list')
@@ -26,6 +27,7 @@ def get_model_routes(name, json_schema, api, route_names = default_route_names):
         {
             'method': 'GET',
             'path': get_path,
+            'name': 'get',
             'handler': api.get,
             'model_name': name,
             'parameters': [
@@ -36,6 +38,7 @@ def get_model_routes(name, json_schema, api, route_names = default_route_names):
         {
             'method': 'POST',
             'path': list_path,
+            'name': 'create',
             'handler': api.create,
             'model_name': name,
             'request_schema': write_schema,
@@ -44,6 +47,7 @@ def get_model_routes(name, json_schema, api, route_names = default_route_names):
         {
             'method': 'PUT',
             'path': get_path,
+            'name': 'update',
             'handler': api.update,
             'model_name': name,
             'parameters': [
@@ -55,6 +59,7 @@ def get_model_routes(name, json_schema, api, route_names = default_route_names):
         {
             'method': 'DELETE',
             'path': get_path,
+            'name': 'delete',
             'handler': api.delete,
             'model_name': name,
             'parameters': [
@@ -63,4 +68,4 @@ def get_model_routes(name, json_schema, api, route_names = default_route_names):
             'response_schema': api.response_schema('delete')
         }
     ]
-    return [r for r in all_routes if r['handler'].__name__ in route_names]
+    return [r for r in all_routes if r['name'] in route_names]

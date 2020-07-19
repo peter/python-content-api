@@ -33,7 +33,7 @@ def make_bottle_routes(model_routes):
                 data=request.json,
                 headers=dict(request.headers),
                 query=dict(request.query)))
-        bottle_handler.__name__ = f'{route["model_name"]}_{handler.__name__}'
+        bottle_handler.__name__ = f'{route["model_name"]}_{route["name"]}'
     for route in model_routes:
         generate_bottle_handler(route)
 

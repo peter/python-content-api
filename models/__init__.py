@@ -60,12 +60,13 @@ def decorate_handler_with_validation(route):
     if schema_error:
       return schema_error_response(schema_error)
     return route['handler'](**kwargs)
-  handler_with_validation.__name__ = route['handler'].__name__
+  handler_with_validation.__name__ = f'{route["handler"].__name__}_with_validation'
   return handler_with_validation
 
 def set_route_defaults(route, name):
   return {
     **route,
+    'name': route.get('name', route['handler'].__name__),
     'model_name': name,
     'handler': decorate_handler_with_validation(route)
   }

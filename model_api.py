@@ -100,9 +100,6 @@ def make_model_api(table_name, json_schema,
     'update': update,
     'delete': delete
   }
-  # NOTE: we need the names of functions to be correct also after decoration
-  for name, fn in api.items():
-    fn.__name__ = name
   return SimpleNamespace(**api)
 
 def empty_validate(data):
