@@ -43,6 +43,7 @@ def test_crud():
 
     # Successful create
     response = requests.post(list_url, json=doc)
+    print(response.json())
     assert response.status_code == 200
     assert validate_schema(response.json(), get_schema) == None
     assert response.json()['url'] == doc['url']
@@ -142,9 +143,7 @@ def test_update_full_doc():
 
     # Successful update with full doc
     valid_doc = {**doc, 'url': f'{BASE_URL}/v1/urls'}
-    print(valid_doc)
     response = requests.put(get_url, json=valid_doc)
-    print(response.json())
     assert response.status_code == 200
 
     # Verify update with get
@@ -172,3 +171,32 @@ def test_create_invalid_url():
     response = requests.post(list_url, json=invalid_doc)
     print(response.json())
     assert response.status_code == 400
+
+def test_parameter_validation():
+    articles_url = f'{BASE_URL}/v1/articles'
+    # Invalid header param
+    response = requests.get(articles_url, headers={'Authorization': 's'})
+    assert response.status_code == 400
+
+    # Valid header param
+    response = requests.get(articles_url, headers={'Authorization': 'secret'})
+    assert response.status_code == 200
+
+    # Invalid query param
+    response = requests.get(articles_url, params={'q': 's'})
+    assert response.status_code == 400
+
+    # Valid query param
+    response = requests.get(articles_url, params={'q': 'corona'})
+    assert response.status_code == 200
+
+def test_request_schema_validation():
+    articles_url = f'{BASE_URL}/v1/articles'
+
+    # Invalid schema
+    response = requests.post(articles_url, json={'title': 123})
+    assert response.status_code == 400
+
+    # Valid schema
+    response = requests.post(articles_url, json={'title': 'foobar'})
+    assert response.status_code == 200

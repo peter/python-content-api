@@ -5,7 +5,7 @@ from json_schema import validate_schema, schema_error_response
 from types import SimpleNamespace
 from util import exception_response, invalid_response
 from psycopg2.errors import UniqueViolation, ForeignKeyViolation
-from json_schema import writable_schema, writable_doc
+from json_schema import writable_doc
 
 def remove_none(doc):
   return {k: v for k, v in doc.items() if v is not None}
@@ -19,8 +19,6 @@ def make_model_api(table_name, json_schema,
   create_decorator=empty_decorator,
   update_decorator=empty_decorator,
   delete_decorator=empty_decorator):
-
-  write_schema = writable_schema(json_schema)
 
   def response_schema(operation):
     if operation == 'list':
@@ -53,9 +51,7 @@ def make_model_api(table_name, json_schema,
 
   @create_decorator
   def create(data, **kwargs):
-      schema_error = validate_schema(data, write_schema)
-      if schema_error:
-        return schema_error_response(schema_error)
+      data = writable_doc(json_schema, data)
       if 'created_at' in json_schema['properties']:
         data = {**data, 'created_at': datetime.now()}
       try:
@@ -69,9 +65,6 @@ def make_model_api(table_name, json_schema,
   def update(path_params, data, **kwargs):
       id = path_params['id']
       data = writable_doc(json_schema, data)
-      schema_error = validate_schema(data, write_schema)
-      if schema_error:
-        return schema_error_response(schema_error)
       try:
         if 'updated_at' in json_schema['properties']:
           data = {**data, 'updated_at': datetime.now()}

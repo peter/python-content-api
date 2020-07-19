@@ -13,6 +13,15 @@ PREMIUM_ARTICLES = [
   }
 ]
 
+json_schema = {
+  'type': 'object',
+  'properties': {
+    'title': {'type': 'string'}
+  },
+  'additionalProperties': False,
+  'required': ['title']
+}
+
 def list_articles(query, headers, **kwargs):
   print(f'query={query}')
   print(f'headers={headers}')
@@ -20,9 +29,13 @@ def list_articles(query, headers, **kwargs):
     return 'q' not in query or query['q'].lower() in article['title'].lower()
   articles = ARTICLES
   if headers.get('Authorization') == 'secret':
-    articles += PREMIUM_ARTICLES
+    articles = articles + PREMIUM_ARTICLES
   data = [a for a in articles if is_match(a)]
   return {'body': {'data': data}}
+
+def create_articles(data, **kwargs):
+  ARTICLES.append(data)
+  return {'body': data}
 
 routes = [
   {
@@ -43,5 +56,11 @@ routes = [
         'schema': {'type': 'string', 'minLength': 6, 'maxLength': 6}
       }
     ]
+  },
+  {
+    'method': 'POST',
+    'path': '/v1/articles',
+    'handler': create_articles,
+    'request_schema': json_schema
   }
 ]
