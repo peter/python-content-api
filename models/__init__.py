@@ -5,29 +5,54 @@ import db
 from model_api import make_model_api
 from model_routes import get_model_routes, default_route_names
 from json_schema import validate_schema, schema_error_response
-from util import invalid_response
+from util import get, invalid_response
 
 ORDERED_MODEL_NAMES = [
   'urls',
   'fetches'
 ]
 
-def parameters_schema(parameters):
-  properties = {p['name']: p['schema'] for p in parameters}
+def parameters_schema(parameters, source):
+  properties = {p['name']: p.get('schema') for p in parameters if p.get('schema')}
+  if not properties:
+    return None
   required = [p['name'] for p in parameters if p.get('required') == True]
+  additional_properties = True if source == 'header' else False
   return {
     'type': 'object',
     'properties': properties,
     'required': required,
-    'additionalProperties': False
+    'additionalProperties': additional_properties
   }
 
-def validate_parameters(route, query, **kwargs):
+def coerce_values(values, schema):
+  def coerce_value(value, value_schema):
+    value_type = get(value_schema, 'type')
+    if not value_type:
+      return value
+    try:
+      if value_type == 'integer':
+        return int(value)
+      elif value_type == 'boolean':
+        return value not in ['0', 'false', 'FALSE', 'f']
+      else:
+        return value
+    except:
+      return value
+  return {k: coerce_value(v, get(schema, f'properties.{k}')) for k, v in values.items()}
+
+def validate_parameters(route, **kwargs):
   if 'parameters' not in route:
     return None
-  query_parameters = [p for p in route['parameters'] if p['in'] == 'query']
-  if query_parameters and query:
-    return validate_schema(query, parameters_schema(query_parameters))
+  sources = {'query': 'query', 'path': 'path_params', 'header': 'headers'}
+  for source, arg_name in sources.items():
+    parameters_in = [p for p in route['parameters'] if p['in'] == source]
+    schema = parameters_schema(parameters_in, source)
+    if schema:
+      values = coerce_values(kwargs.get(arg_name, {}), schema)
+      schema_error = validate_schema(values, schema)
+      if schema_error:
+        return schema_error
 
 def decorate_handler_with_validation(route):
   def handler_with_validation(**kwargs):

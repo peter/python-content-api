@@ -29,5 +29,5 @@ def writable_doc(schema, doc):
   return {k: v for k, v in doc.items() if k not in unwritable_keys}
 
 def schema_error_response(schema_error):
-  body = {'error': {'message': schema_error.message, 'schema': schema_error.schema}}
+  body = {'error': {'message': schema_error.message, 'path': list(schema_error.path), 'schema': schema_error.schema}}
   return {'status': 400, 'body': body}

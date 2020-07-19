@@ -7,11 +7,6 @@ from util import exception_response, invalid_response
 from psycopg2.errors import UniqueViolation, ForeignKeyViolation
 from json_schema import writable_schema, writable_doc
 
-def is_valid_id(id):
-  return re.match('\A[1-9][0-9]*\Z', id)
-
-invalid_id_response = invalid_response('Invalid id - must be integer')
-
 def remove_none(doc):
   return {k: v for k, v in doc.items() if v is not None}
 
@@ -51,8 +46,6 @@ def make_model_api(table_name, json_schema,
   @get_decorator
   def get(path_params, **kwargs):
       id = path_params['id']
-      if not is_valid_id(id):
-        return invalid_id_response
       doc = db.query_one(f'select * from {table_name} where id = %s', [id])
       if not doc:
           return {'status': 404}
@@ -75,8 +68,6 @@ def make_model_api(table_name, json_schema,
   @update_decorator
   def update(path_params, data, **kwargs):
       id = path_params['id']
-      if not is_valid_id(id):
-        return invalid_id_response
       data = writable_doc(json_schema, data)
       schema_error = validate_schema(data, write_schema)
       if schema_error:
@@ -95,8 +86,6 @@ def make_model_api(table_name, json_schema,
   @delete_decorator
   def delete(path_params, **kwargs):
       id = path_params['id']
-      if not is_valid_id(id):
-        return invalid_id_response
       doc = db.query_one(f'select * from {table_name} where id = %s', [id])
       if not doc:
           return {'status': 404}
