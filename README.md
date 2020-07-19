@@ -1,6 +1,6 @@
 # Example Python REST API
 
-Features:
+## Features
 
 * Minimal codebase - around 500 lines of Python (see [bin/loc](bin/loc))
 * Postgresql access with psycopg2 (see [db.py](db.py))
