@@ -14,6 +14,7 @@ ORDERED_MODEL_NAMES = [
 def set_route_defaults(route, name):
   return {
     **route,
+    'method': route.get('method', 'GET'),
     'name': route.get('name', route['handler'].__name__),
     'model_name': name,
     'handler': decorate_handler_with_validation(route)

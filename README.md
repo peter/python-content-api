@@ -40,8 +40,32 @@ A route `handler` will receive the following arguments:
 
 What's usually referred to as `middleware` in web frameworks can be achieved
 by adding [Python decorators](https://www.programiz.com/python-programming/decorator) to
-a `handler`, see for example how this is done in [model_api.py](model_api.py) and
-in [models/__init__.py](models/__init__.py).
+a route `handler`, see for example how this is done in [model_api.py](model_api.py) and
+in [models/__init__.py](models/__init__.py) or in this simple example model:
+
+```python
+import time
+
+def timer(handler):
+  def with_timer(**kwargs):
+    start_time = time.time()
+    result = handler(**kwargs)
+    elapsed = time.time() - start_time
+    print(f'timer elapsed={elapsed}')
+    return result
+  return with_timer
+
+@timer
+def hello(**kwargs):
+  return {'body': 'Hello World!'}
+
+routes = [
+  {
+    'path': '/v1/hello',
+    'handler': hello
+  }
+]
+```
 
 ## Setting up the Development Environment
 
