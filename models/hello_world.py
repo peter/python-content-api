@@ -21,7 +21,7 @@ def cache_header(handler):
 @timer
 @cache_header
 def hello(**kwargs):
-  return {'body': 'Hello World!'}
+  return {'body': {'hello': 'World!'}}
 
 routes = [
   {
