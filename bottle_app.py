@@ -19,6 +19,8 @@ def bottle_response(model_response):
     body = json.dumps(model_response.get('body', {}), indent=4, cls=JsonEncoder)
     response.status = status
     response.set_header('Content-Type', 'application/json')
+    for k, v in model_response.get('headers', {}).items():
+        response.set_header(k, v)
     return body
     #return HTTPResponse(status=status, body=body, headers=headers)
 

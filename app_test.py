@@ -200,3 +200,11 @@ def test_request_schema_validation():
     # Valid schema
     response = requests.post(articles_url, json={'title': 'foobar'})
     assert response.status_code == 200
+
+def test_response_headers():
+    url = f'{BASE_URL}/v1/hello'
+    response = requests.get(url)
+    assert response.status_code == 200
+    print(f'response.headers={response.headers}')
+    assert response.headers.get('Cache-Control') == 'max-age=120'
+

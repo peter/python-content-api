@@ -17,7 +17,10 @@ class JsonEncoder(json.JSONEncoder):
 app.json_encoder = JsonEncoder
 
 def flask_response(result):
-    return make_response(jsonify(result.get('body', {})), result.get('status', 200))
+    response = make_response(jsonify(result.get('body', {})), result.get('status', 200))
+    for k, v in result.get('headers', {}).items():
+        response.headers[k] = v
+    return response
 
 # Custom generic Flask exception handler (the default is an HTML response)
 if not os.environ.get('FLASK_DEBUG', '0'):

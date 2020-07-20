@@ -55,7 +55,17 @@ def timer(handler):
     return result
   return with_timer
 
+def cache_header(handler):
+  def with_cache_header(**kwargs):
+    result = handler(**kwargs)
+    return {
+      **result,
+      'headers': {**result.get('headers', {}), 'Cache-Control': 'max-age=120'}
+    }
+  return with_cache_header
+
 @timer
+@cache_header
 def hello(**kwargs):
   return {'body': 'Hello World!'}
 
