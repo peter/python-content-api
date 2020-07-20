@@ -47,7 +47,7 @@ A route `handler` returns a response dict with these attributes:
 What's usually referred to as `middleware` in web frameworks can be achieved
 by adding [Python decorators](https://www.programiz.com/python-programming/decorator) to
 a route `handler`, see for example how this is done in [model_api.py](model_api.py) and
-in [models/__init__.py](models/__init__.py) or in this simple example model (notice that the order of decorators matters):
+in [models/__init__.py](models/__init__.py) or in this simple example model (notice that the order of decorators potentially matters):
 
 ```python
 import time
@@ -56,17 +56,17 @@ def with_headers(response, headers):
   return {**response, 'headers': {**response.get('headers', {}), **headers}}
 
 def timer(handler):
-  def with_timer(**kwargs):
+  def with_timer(**request):
     start_time = time.time()
-    response = handler(**kwargs)
+    response = handler(**request)
     elapsed = round((time.time() - start_time)*1000, 3)
     print(f'timer elapsed={elapsed}')
     return with_headers(response, {'X-Response-Time': f'{elapsed}ms'})
   return with_timer
 
 def cache_header(handler):
-  def with_cache_header(**kwargs):
-    response = handler(**kwargs)
+  def with_cache_header(**request):
+    response = handler(**request)
     return with_headers(response, {'Cache-Control': 'max-age=120'})
   return with_cache_header
 
@@ -82,6 +82,10 @@ routes = [
   }
 ]
 ```
+
+Please note that a handler decorator needs to accept all named arguments
+that it receives and pass all of them on to the handler using `**request`
+in both the function signature and the invocation of the handler.
 
 ## Setting up the Development Environment
 
