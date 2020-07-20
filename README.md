@@ -41,7 +41,7 @@ A route `handler` will receive the following arguments:
 What's usually referred to as `middleware` in web frameworks can be achieved
 by adding [Python decorators](https://www.programiz.com/python-programming/decorator) to
 a route `handler`, see for example how this is done in [model_api.py](model_api.py) and
-in [models/__init__.py](models/__init__.py) or in this simple example model:
+in [models/__init__.py](models/__init__.py) or in this simple example model (notice that the order of decorators matters):
 
 ```python
 import time
