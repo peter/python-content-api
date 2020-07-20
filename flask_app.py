@@ -32,11 +32,11 @@ def make_flask_routes(model_routes):
     def get_flask_handler(route):
         handler = route['handler']
         def flask_handler(**kwargs):
-            return flask_response(handler(
-                path_params=kwargs,
-                data=request.json,
-                headers=dict(request.headers),
-                query=dict(request.args)))
+            return flask_response(handler({
+                'path_params': kwargs,
+                'data': request.json,
+                'headers': dict(request.headers),
+                'query': dict(request.args)}))
         # See: https://stackoverflow.com/questions/17256602/assertionerror-view-function-mapping-is-overwriting-an-existing-endpoint-functi
         flask_handler.__name__ = f'{route["model_name"]}_{route["name"]}'
         return flask_handler

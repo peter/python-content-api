@@ -37,21 +37,21 @@ def make_model_api(table_name, json_schema,
       return json_schema
 
   @list_decorator
-  def list(**kwargs):
+  def list(request):
       docs = [remove_none(doc) for doc in db.query(f'select * from {table_name}')]
       return {'body': {'data': docs}}
 
   @get_decorator
-  def get(path_params, **kwargs):
-      id = path_params['id']
+  def get(request):
+      id = request.get('path_params')['id']
       doc = db.query_one(f'select * from {table_name} where id = %s', [id])
       if not doc:
           return {'status': 404}
       return {'body': remove_none(doc)}
 
   @create_decorator
-  def create(data, **kwargs):
-      data = writable_doc(json_schema, data)
+  def create(request):
+      data = writable_doc(json_schema, request.get('data'))
       if 'created_at' in json_schema['properties']:
         data = {**data, 'created_at': datetime.now()}
       try:
@@ -62,9 +62,9 @@ def make_model_api(table_name, json_schema,
           return exception_response(db_error)
 
   @update_decorator
-  def update(path_params, data, **kwargs):
-      id = path_params['id']
-      data = writable_doc(json_schema, data)
+  def update(request):
+      id = request.get('path_params')['id']
+      data = writable_doc(json_schema, request.get('data'))
       try:
         if 'updated_at' in json_schema['properties']:
           data = {**data, 'updated_at': datetime.now()}
@@ -77,8 +77,8 @@ def make_model_api(table_name, json_schema,
       return {'body': remove_none(updated_doc)}
 
   @delete_decorator
-  def delete(path_params, **kwargs):
-      id = path_params['id']
+  def delete(request):
+      id = request.get('path_params')['id']
       doc = db.query_one(f'select * from {table_name} where id = %s', [id])
       if not doc:
           return {'status': 404}
@@ -95,24 +95,24 @@ def make_model_api(table_name, json_schema,
   }
   return SimpleNamespace(**api)
 
-def empty_validate(data):
+def empty_validate(request):
   return None
 
 def make_model_api_with_validation(name, json_schema, validate=empty_validate):
   def create_with_validation(_create):
-    def create(data, **kwargs):
-      invalid_message = validate(data)
+    def create(request):
+      invalid_message = validate(request)
       if invalid_message:
         return invalid_response(invalid_message)
-      return _create(data, **kwargs)
+      return _create(request)
     return create
 
   def update_with_validation(_update):
-    def update(path_params, data, **kwargs):
-      invalid_message = validate(data)
+    def update(request):
+      invalid_message = validate(request)
       if invalid_message:
         return invalid_response(invalid_message)
-      return _update(path_params, data, **kwargs)
+      return _update(request)
     return update
 
   return make_model_api(name, json_schema,

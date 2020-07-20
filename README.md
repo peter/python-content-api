@@ -31,7 +31,7 @@ Some alternatives for building an API like this in Python with popular framework
 * If a model doesn't specify a `routes` attribute then it will get the five default CRUD routes (`list`, `get`, `create`, `update`, `delete`) based on the models `json_schema` and `db_schema` attributes (those need to be present). For examples see [models/fetches.py](models/fetches.py). If you only want to expose a subset of the CRUD routes for a model you can set the `route_names` attribute, see [models/users.py](models/users.py)
 * By specifying the `routes` property for a model you can customize the default CRUD routes, for example to add custom validation, see [models/urls.py](models/urls.py). You are also free to set any types of routes that you need for the model and the `json_schema` and `db_schema` properties are not required in this case. You may for example have a model that uses a different database or no database at all, see [models/articles.py](models/articles.py). The `routes` property needs to be a list of dictionaries with the keys `method`, `path`, `handler`, and the optional keys `name` (name of the route, defaults to the name of handler function), `request_schema` (JSON schema to validate in request body), `response_schema` (JSON schema of response body), and `parameters` (a list of [OpenAPI parameters](https://swagger.io/docs/specification/describing-parameters/) to validate in path/query/header - see [models/articles.py](models/articles.py)). The default CRUD routes are defined in [model_routes.py](model_routes.py).
 
-A route `handler` will receive the following named arguments:
+A route `handler` will receive a single argument dict with these attributes:
 
 * `path_params` - dict with parameters from the path, such as `id` for `/v1/urls/<id>`
 * `data` - dict with body data for `POST` and `PUT` requests
@@ -56,23 +56,23 @@ def with_headers(response, headers):
   return {**response, 'headers': {**response.get('headers', {}), **headers}}
 
 def timer(handler):
-  def with_timer(**request):
+  def with_timer(request):
     start_time = time.time()
-    response = handler(**request)
+    response = handler(request)
     elapsed = round((time.time() - start_time)*1000, 3)
     print(f'timer elapsed={elapsed}')
     return with_headers(response, {'X-Response-Time': f'{elapsed}ms'})
   return with_timer
 
 def cache_header(handler):
-  def with_cache_header(**request):
-    response = handler(**request)
+  def with_cache_header(request):
+    response = handler(request)
     return with_headers(response, {'Cache-Control': 'max-age=120'})
   return with_cache_header
 
 @timer
 @cache_header
-def hello(**kwargs):
+def hello(request):
   return {'body': {'hello': 'World!'}}
 
 routes = [
@@ -82,10 +82,6 @@ routes = [
   }
 ]
 ```
-
-Please note that a handler decorator needs to accept all named arguments
-that it receives and pass all of them on to the handler using `**request`
-in both the function signature and the invocation of the handler.
 
 ## Setting up the Development Environment
 

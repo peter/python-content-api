@@ -22,7 +22,9 @@ json_schema = {
   'required': ['title']
 }
 
-def list_articles(query, headers, **kwargs):
+def list_articles(request):
+  query = request.get('query')
+  headers = request.get("headers")
   print(f'query={query}')
   print(f'headers={headers}')
   def is_match(article):
@@ -33,7 +35,8 @@ def list_articles(query, headers, **kwargs):
   data = [a for a in articles if is_match(a)]
   return {'body': {'data': data}}
 
-def create_articles(data, **kwargs):
+def create_articles(request):
+  data = request.get('data')
   ARTICLES.append(data)
   return {'body': data}
 

@@ -29,7 +29,8 @@ db_schema = f'''
 
 db_migrations = []
 
-def validate_url(data):
+def validate_url(request):
+  data = request.get('data')
   if not data or not 'url' in data:
     return None
   try:

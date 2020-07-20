@@ -32,7 +32,7 @@ def coerce_values(values, schema):
       return value
   return {k: coerce_value(v, get(schema, f'properties.{k}')) for k, v in values.items()}
 
-def validate_parameters(route, **kwargs):
+def validate_parameters(route, request):
   if 'parameters' not in route:
     return None
   sources = {'query': 'query', 'path': 'path_params', 'header': 'headers'}
@@ -40,23 +40,23 @@ def validate_parameters(route, **kwargs):
     parameters_in = [p for p in route['parameters'] if p['in'] == source]
     schema = parameters_schema(parameters_in, source)
     if schema:
-      values = coerce_values(kwargs.get(arg_name, {}), schema)
+      values = coerce_values(request.get(arg_name, {}), schema)
       schema_error = validate_schema(values, schema)
       if schema_error:
         return schema_error
 
 def decorate_handler_with_validation(route):
-  def handler_with_validation(**kwargs):
-    schema_error = validate_parameters(route, **kwargs)
+  def handler_with_validation(request):
+    schema_error = validate_parameters(route, request)
     if schema_error:
       return schema_error_response(schema_error)
     data_schema = route.get('request_schema')
     if data_schema:
       write_schema = writable_schema(data_schema)
-      data = writable_doc(data_schema, kwargs.get('data'))
+      data = writable_doc(data_schema, request.get('data'))
       schema_error = validate_schema(data, write_schema)
       if schema_error:
         return schema_error_response(schema_error)
-    return route['handler'](**kwargs)
+    return route['handler'](request)
   handler_with_validation.__name__ = f'{route["handler"].__name__}_with_validation'
   return handler_with_validation
