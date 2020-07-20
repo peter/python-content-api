@@ -207,4 +207,5 @@ def test_response_headers():
     assert response.status_code == 200
     print(f'response.headers={response.headers}')
     assert response.headers.get('Cache-Control') == 'max-age=120'
+    assert response.headers.get('X-Response-Time')
 

@@ -46,22 +46,22 @@ in [models/__init__.py](models/__init__.py) or in this simple example model (not
 ```python
 import time
 
+def with_headers(response, headers):
+  return {**response, 'headers': {**response.get('headers', {}), **headers}}
+
 def timer(handler):
   def with_timer(**kwargs):
     start_time = time.time()
-    result = handler(**kwargs)
-    elapsed = time.time() - start_time
+    response = handler(**kwargs)
+    elapsed = round((time.time() - start_time)*1000, 3)
     print(f'timer elapsed={elapsed}')
-    return result
+    return with_headers(response, {'X-Response-Time': f'{elapsed}ms'})
   return with_timer
 
 def cache_header(handler):
   def with_cache_header(**kwargs):
-    result = handler(**kwargs)
-    return {
-      **result,
-      'headers': {**result.get('headers', {}), 'Cache-Control': 'max-age=120'}
-    }
+    response = handler(**kwargs)
+    return with_headers(response, {'Cache-Control': 'max-age=120'})
   return with_cache_header
 
 @timer
