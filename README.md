@@ -46,6 +46,8 @@ A route `handler` returns a response dict with these attributes:
 * `status` (optional) - HTTP status code (defaults to 200)
 * `headers` (optional) - a dict with HTTP response headers
 
+## Decorators
+
 What's usually referred to as `middleware` in web frameworks can be achieved
 by adding [Python decorators](https://www.programiz.com/python-programming/decorator) to
 a route `handler`, see for example how this is done in [model_api.py](model_api.py) and
