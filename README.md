@@ -15,7 +15,7 @@
 TODO:
 
 * List endpoint should support page, limit, and filter params
-* Support https://www.django-rest-framework.org
+* Implement support for the [Tornado Framework](https://www.tornadoweb.org/en/stable/) in `tornado_app.py`, see [this tutorial](https://medium.com/octopus-labs-london/how-to-build-a-rest-api-in-python-with-tornado-fc717c33824a)
 
 Some alternatives for building an API like this in Python with popular frameworks:
 
