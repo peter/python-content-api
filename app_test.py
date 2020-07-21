@@ -202,10 +202,13 @@ def test_request_schema_validation():
     assert response.status_code == 200
 
 def test_response_headers():
-    url = f'{BASE_URL}/v1/hello'
-    response = requests.get(url)
-    assert response.status_code == 200
-    print(f'response.headers={response.headers}')
-    assert response.headers.get('Cache-Control') == 'max-age=120'
-    assert response.headers.get('X-Response-Time')
-
+    urls = [
+        f'{BASE_URL}/v1/decorators_example',
+        f'{BASE_URL}/v1/composed_decorators_example1',
+        f'{BASE_URL}/v1/composed_decorators_example2'
+    ]
+    for url in urls:
+        response = requests.get(url)
+        assert response.status_code == 200
+        assert response.headers.get('Cache-Control') == 'max-age=120'
+        assert response.headers.get('X-Response-Time')

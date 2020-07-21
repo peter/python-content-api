@@ -1,3 +1,4 @@
+from functools import reduce, wraps
 import re
 
 def invalid_response(message):
@@ -13,6 +14,25 @@ def exception_body(exception):
 
 def exception_response(error):
     return {'body': exception_body(error), 'status': 400}
+
+def named_args(handler):
+    @wraps(handler)
+    def with_named_args(request):
+        return handler(**request)
+    return with_named_args
+
+def compose_decorators(decorators):
+    def compose_decorators_inner(handler):
+        @wraps(handler)
+        def with_composed_decorators(request):
+            composed = reduce(
+                lambda acc, decorator: decorator(acc),
+                reversed(decorators),
+                handler)
+            return composed(request)
+        return with_composed_decorators
+    return compose_decorators_inner
+
 
 def get(value, keys, default_value = None):
     '''

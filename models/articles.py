@@ -1,3 +1,5 @@
+from util import named_args
+
 ARTICLES = [
   {
     'title': 'Why are so many corona patients struggling with lingering symptoms?'
@@ -22,11 +24,8 @@ json_schema = {
   'required': ['title']
 }
 
-def list_articles(request):
-  query = request.get('query')
-  headers = request.get("headers")
-  print(f'query={query}')
-  print(f'headers={headers}')
+@named_args
+def list_articles(query, headers, **request):
   def is_match(article):
     return 'q' not in query or query['q'].lower() in article['title'].lower()
   articles = ARTICLES
@@ -35,8 +34,8 @@ def list_articles(request):
   data = [a for a in articles if is_match(a)]
   return {'body': {'data': data}}
 
-def create_articles(request):
-  data = request.get('data')
+@named_args
+def create_articles(data, **request):
   ARTICLES.append(data)
   return {'body': data}
 

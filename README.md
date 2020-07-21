@@ -50,21 +50,23 @@ a route `handler`, see for example how this is done in [model_api.py](model_api.
 in [models/__init__.py](models/__init__.py) or in this simple example model (notice that the order of decorators potentially matters):
 
 ```python
+from functools import wraps
 import time
 
 def with_headers(response, headers):
   return {**response, 'headers': {**response.get('headers', {}), **headers}}
 
 def timer(handler):
+  @wraps(handler)
   def with_timer(request):
     start_time = time.time()
     response = handler(request)
     elapsed = round((time.time() - start_time)*1000, 3)
-    print(f'timer elapsed={elapsed}')
     return with_headers(response, {'X-Response-Time': f'{elapsed}ms'})
   return with_timer
 
 def cache_header(handler):
+  @wraps(handler)
   def with_cache_header(request):
     response = handler(request)
     return with_headers(response, {'Cache-Control': 'max-age=120'})
@@ -72,16 +74,18 @@ def cache_header(handler):
 
 @timer
 @cache_header
-def hello(request):
-  return {'body': {'hello': 'World!'}}
+def decorators_example(request):
+  return {'body': {}}
 
 routes = [
   {
-    'path': '/v1/hello',
-    'handler': hello
-  }
+    'path': '/v1/decorators_example',
+    'handler': decorators_example
+  },
 ]
 ```
+
+Composing decorators is fairly straightforward, see [models/composed_decorators_example.py](models/composed_decorators_example.py).
 
 ## Setting up the Development Environment
 

@@ -1,5 +1,6 @@
 from json_schema import validate_schema, schema_error_response, writable_schema, writable_doc
 from util import get, invalid_response
+from functools import wraps
 
 def parameters_schema(parameters, source):
   properties = {p['name']: p.get('schema') for p in parameters if p.get('schema')}
@@ -46,6 +47,7 @@ def validate_parameters(route, request):
         return schema_error
 
 def decorate_handler_with_validation(route):
+  @wraps(route['handler'])
   def handler_with_validation(request):
     schema_error = validate_parameters(route, request)
     if schema_error:
@@ -58,5 +60,4 @@ def decorate_handler_with_validation(route):
       if schema_error:
         return schema_error_response(schema_error)
     return route['handler'](request)
-  handler_with_validation.__name__ = f'{route["handler"].__name__}_with_validation'
   return handler_with_validation
