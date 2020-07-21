@@ -29,7 +29,7 @@ if not os.environ.get('FLASK_DEBUG', '0'):
         return flask_response({'body': exception_body(e), 'status': 500})
 
 def make_flask_routes(model_routes):
-    def get_flask_handler(route):
+    def get_flask_handler(index, route):
         handler = route['handler']
         def flask_handler(**kwargs):
             return flask_response(handler({
@@ -37,11 +37,11 @@ def make_flask_routes(model_routes):
                 'data': request.json,
                 'headers': dict(request.headers),
                 'query': dict(request.args)}))
-        # See: https://stackoverflow.com/questions/17256602/assertionerror-view-function-mapping-is-overwriting-an-existing-endpoint-functi
-        flask_handler.__name__ = f'{route["model_name"]}_{route["name"]}'
+        # Flask handler names need to be uniqe, see: https://stackoverflow.com/questions/17256602/assertionerror-view-function-mapping-is-overwriting-an-existing-endpoint-functi
+        flask_handler.__name__ = f'{route["model_name"]}_{route["name"]}_{index}'
         return flask_handler
-    for route in model_routes:
-        app.route(route['path'], methods = [route['method']])(get_flask_handler(route))
+    for index, route in enumerate(model_routes):
+        app.route(route['path'], methods = [route['method']])(get_flask_handler(index, route))
 
 @app.route('/static/<path:path>')
 def send_static(path):

@@ -87,6 +87,10 @@ routes = [
 ]
 ```
 
+Note that the `@wraps` decorator in the code above is not strictly necessary
+but its main purpose is to preserve the name of the handler function, i.e. it
+makes sure that `decorators_example.__name__` doesn't change.
+
 Composing decorators is fairly straightforward, see [models/composed_decorators_example.py](models/composed_decorators_example.py).
 
 ## Setting up the Development Environment
