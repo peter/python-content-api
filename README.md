@@ -38,6 +38,8 @@ A route `handler` will receive a single argument dict with these attributes:
 * `headers` - dict with HTTP request headers
 * `query` - dict with query parameters, such as `{'page': 2}` for `/v1/articles?page=2`
 
+If you prefer you can use the `@named_args` decorator to unpack the request dict and have your handler receive the request attributes as named arguments, see [models/articles.py](models/articles.py).
+
 A route `handler` returns a response dict with these attributes:
 
 * `body` - data to be JSON serialized
