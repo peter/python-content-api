@@ -21,8 +21,8 @@ def named_args(handler):
         return handler(**request)
     return with_named_args
 
-def compose_decorators(decorators):
-    def compose_decorators_inner(handler):
+def with_decorators(decorators):
+    def with_decorators_inner(handler):
         @wraps(handler)
         def with_composed_decorators(request):
             composed = reduce(
@@ -31,7 +31,7 @@ def compose_decorators(decorators):
                 handler)
             return composed(request)
         return with_composed_decorators
-    return compose_decorators_inner
+    return with_decorators_inner
 
 
 def get(value, keys, default_value = None):

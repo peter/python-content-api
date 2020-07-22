@@ -1,4 +1,4 @@
-from util import compose_decorators
+from util import with_decorators
 from functools import wraps
 import time
 
@@ -26,11 +26,11 @@ decorators = [
   cache_header
 ]
 
-@compose_decorators(decorators)
+@with_decorators(decorators)
 def composed_decorators_example1(request):
   return {'body': {}}
 
-@compose_decorators(decorators)
+@with_decorators(decorators)
 def composed_decorators_example2(request):
   return {'body': {}}
 
