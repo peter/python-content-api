@@ -142,46 +142,49 @@ open http://localhost:5000/v1/swagger.json
 
 ## Invoking the API
 
-```
+Below is an example of testing the CRUD operations of the API from the command line using `curl` and [jq](https://stedolan.github.io/jq/) (`brew install jq`):
+
+```sh
 export BASE_URL=http://localhost:5000
 
 # create with invalid data yields 400
 curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com", "foo": 1}' $BASE_URL/v1/urls
 
 # successful create
-curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com"}' $BASE_URL/v1/urls
+export URL=$(curl -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com"}' $BASE_URL/v1/urls)
+export ID=$(echo $URL | jq '.id')
 
 # list
 curl -i $BASE_URL/v1/urls
 
 # get of non-existant id yields 404
-curl -i $BASE_URL/v1/urls/2
+curl -i $BASE_URL/v1/urls/12345
 
 # get
-curl -i $BASE_URL/v1/urls/1
+curl -i $BASE_URL/v1/urls/$ID
 
 # update of non-existant id yields 404
-curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/2
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/12345
 
 # update with invalid data yields 400
-curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com", "foo": 1}' $BASE_URL/v1/urls/1
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com", "foo": 1}' $BASE_URL/v1/urls/$ID
 
 # successful update
-curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/1
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/$ID
 
 # Check the update happened
 curl -i $BASE_URL/v1/urls
-curl -i $BASE_URL/v1/urls/1
+curl -i $BASE_URL/v1/urls/$ID
 
 # delete of non-existant id yields 404
-curl -i -X DELETE $BASE_URL/v1/urls/2
+curl -i -X DELETE $BASE_URL/v1/urls/12345
 
 # successful delete
-curl -i -X DELETE $BASE_URL/v1/urls/1
+curl -i -X DELETE $BASE_URL/v1/urls/$ID
 
 # Check the delete happened
 curl -i $BASE_URL/v1/urls
-curl -i $BASE_URL/v1/urls/1
+curl -i $BASE_URL/v1/urls/$ID
 ```
 
 ## Talking to Postgres
