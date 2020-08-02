@@ -245,12 +245,12 @@ Push files to git:
 ```sh
 git add .
 git commit -m 'hello world'
-git push heroku master
+git push origin master
 ```
 
 ## Deployment with Heroku
 
-Specified Python version and Procfile for Heroku:
+Specify Python version and Procfile for Heroku:
 
 ```sh
 python --version # => Python 3.7.7
