@@ -5,6 +5,7 @@ from datetime import date
 import tornado.ioloop
 import tornado.web
 from tornado.web import Application, RequestHandler
+from tornado.log import enable_pretty_logging
 from swagger import generate_swagger
 from models import all_model_routes
 
@@ -42,7 +43,10 @@ class Handler(RequestHandler):
       'headers': dict(self.request.headers),
       'query': query})
     self.set_status(response.get('status', 200))
+    for k, v in response.get('headers', {}).items():
+      self.set_header(k, v)
     self.finish(to_json(response.get('body', {})))
+    print(f'tornado debug: finished request {route["method"]} {route["path"]}')
   def get(self, *params, **kwparams):
     self.handle_request('GET', *params, **kwparams)
   def put(self, *params, **kwparams):
@@ -80,6 +84,7 @@ def make_app():
 
 if __name__ == '__main__':
     app = make_app()
+    enable_pretty_logging()
     port = int(os.environ.get('PORT', 5000))
     app.listen(port)
     tornado.ioloop.IOLoop.current().start()
