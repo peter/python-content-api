@@ -2,9 +2,10 @@ import re
 import json
 import os
 from datetime import date
-import tornado
+import tornado.ioloop
+import tornado.web
 from tornado.web import Application, RequestHandler
-from tornado.ioloop import IOLoop
+from swagger import generate_swagger
 from models import all_model_routes
 
 class JsonEncoder(json.JSONEncoder):
@@ -12,6 +13,9 @@ class JsonEncoder(json.JSONEncoder):
 		if isinstance(obj, date): # ISO date formating
 			return str(obj)
 		return json.JSONEncoder.default(self, obj)
+
+def to_json(data):
+  return json.dumps(data, indent=4, cls=JsonEncoder)
 
 def request_data(method, request):
   if not method in ['PUT', 'POST']:
@@ -29,7 +33,8 @@ class Handler(RequestHandler):
     route = self.routes.get(method)
     if not route:
       self.set_status(405)
-      return self.finish()
+      self.finish()
+      return
     query = {k: self.get_argument(k) for k in self.request.query_arguments}
     response = route['handler']({
       'path_params': kwparams,
@@ -37,8 +42,7 @@ class Handler(RequestHandler):
       'headers': dict(self.request.headers),
       'query': query})
     self.set_status(response.get('status', 200))
-    body = json.dumps(response.get('body', {}), indent=4, cls=JsonEncoder)
-    self.finish(body)
+    self.finish(to_json(response.get('body', {})))
   def get(self, *params, **kwparams):
     self.handle_request('GET', *params, **kwparams)
   def put(self, *params, **kwparams):
@@ -60,14 +64,22 @@ def routes_by_path(routes):
     result[route['path']][route['method']] = route
   return result
 
+model_routes = all_model_routes()
+
+class SwaggerHandler(RequestHandler):
+  def get(self):
+    self.set_header('Content-Type', 'application/json')
+    self.finish(to_json(generate_swagger(model_routes)))
+
 def make_app():
   urls = []
-  for path, routes in routes_by_path(all_model_routes()).items():
+  for path, routes in routes_by_path(model_routes).items():
     urls.append((tornado_path(path), Handler, {'routes': routes}))
-  return Application(urls)
+  urls.append(('/v1/swagger.json', SwaggerHandler))
+  return Application(urls, debug=True)
 
 if __name__ == '__main__':
     app = make_app()
     port = int(os.environ.get('PORT', 5000))
     app.listen(port)
-    IOLoop.instance().start()
+    tornado.ioloop.IOLoop.current().start()
