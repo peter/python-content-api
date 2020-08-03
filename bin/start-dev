@@ -2,6 +2,8 @@
 
 if [ "$FRAMEWORK" = "bottle" ]; then
   python bottle_app.py
+elif [ "$FRAMEWORK" = "tornado" ]; then
+  python tornado_app.py
 else
   FLASK_DEBUG=1 FLASK_APP=app.py python -m flask run
 fi
