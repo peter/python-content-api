@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-ls *.py models/__init__.py |grep -v _test | grep -v bottle |xargs wc -l
+ls *.py models/__init__.py |grep -v _test | grep -v bottle | grep -v tornado | xargs wc -l
