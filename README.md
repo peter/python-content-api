@@ -15,10 +15,9 @@ but I had issues running it through the tests as well.
 
 TODO:
 
-* List endpoint should support page, limit, and filter params
-* Implement support for the [Tornado Framework](https://www.tornadoweb.org/en/stable/) in `tornado_app.py`, see [this tutorial](https://medium.com/octopus-labs-london/how-to-build-a-rest-api-in-python-with-tornado-fc717c33824a)
-* Add status 405 and 404 (missing path, invalid method) to app_test.py
 * Rename request.data to request.body for consistency
+* Add missing path, invalid method, and invalid request json body to app_test.py
+* List endpoint should support page, limit, and filter params
 
 Some alternatives for building an API like this in Python with popular frameworks:
 
@@ -378,6 +377,7 @@ BASE_URL=https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production pyth
 * [OpenAPI 3 Meta Schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas/v3.0)
 * [ReDoc - API Console feature request](https://github.com/Redocly/redoc/issues/53)
 * [Redoc.ly Developer Portal (Commercial)](https://redoc.ly/developer-portal)
+* [How to build a REST API with Tornado](https://medium.com/octopus-labs-london/how-to-build-a-rest-api-in-python-with-tornado-fc717c33824a)
 
 Serverless (AWS Lambda) deployment:
 
