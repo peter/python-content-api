@@ -5,7 +5,8 @@
 * Minimal codebase - around 500 lines of Python (see [bin/loc](bin/loc))
 * Postgresql access with psycopg2 (see [db.py](db.py))
 * Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and [models/__init__.py](models/__init__.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
-* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is preliminary support for the Bottle framework in [bottle_app.py](bottle_app.py) but unfortunately I had issues getting Bottle to work reliably (it would spawn multiple processes and POST requests from Python would hang etc.)
+* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is preliminary support for the Bottle framework in [bottle_app.py](bottle_app.py) but unfortunately I had issues getting Bottle to work reliably (it would spawn multiple processes and POST requests from Python would hang etc.). Similarly there is some support for Tornado in [tornado_app.py](tornado_app.py)
+but I had issues running it through the tests as well.
 * Validation with jsonschema (see the `validate_schema` function in [json_schema.py](json_schema.py) and its usages in [request_validation.py](request_validation.py), and [app_test.py](app_test.py))
 * API testing with pytest and the request package (see [app_test.py](app_test.py))
 * OpenAPI/Swagger documentation generated from model routes (see [swagger.py](swagger.py))
@@ -16,6 +17,7 @@ TODO:
 
 * List endpoint should support page, limit, and filter params
 * Implement support for the [Tornado Framework](https://www.tornadoweb.org/en/stable/) in `tornado_app.py`, see [this tutorial](https://medium.com/octopus-labs-london/how-to-build-a-rest-api-in-python-with-tornado-fc717c33824a)
+* Add status 405 and 404 (missing path, invalid method) to app_test.py
 * Rename request.data to request.body for consistency
 
 Some alternatives for building an API like this in Python with popular frameworks:
