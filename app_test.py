@@ -2,7 +2,6 @@ import os
 import json
 import requests
 import uuid
-import app
 from util import get, omit
 from json_schema import validate_schema
 
