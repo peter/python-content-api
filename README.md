@@ -3,7 +3,8 @@
 ## Features
 
 * Minimal codebase - around 500 lines of Python (see [bin/loc](bin/loc))
-* Postgresql access with psycopg2 (see [db.py](db.py))
+* Postgresql access with psycopg2 (see [db/pg.py](db/pg.py))
+* MongoDB access with pymongo (see [db/mongodb.py](db/mongodb.py))
 * Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and [models/__init__.py](models/__init__.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
 * Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is also support for Bottle in [bottle_app.py](bottle_app.py) and Tornado in [tornado_app.py](tornado_app.py). With both Bottle and Tornado I had issues with the tests
 if posting a URL where the URL would point back to the server, i.e. the server
@@ -16,6 +17,8 @@ would serve a request and in that request make a http request to itself. Once I 
 
 TODO:
 
+* ID validation for pg and mongodb (MongoDB: bson.errors.InvalidId: '12345' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string)
+* Unique constraint for mongodb
 * Add missing path, invalid method, and invalid request json body to app_test.py
 * List endpoint should support page, limit, and filter params
 
@@ -137,6 +140,12 @@ FRAMEWORK=bottle bin/test
 FRAMEWORK=tornado bin/test
 ```
 
+To run the API tests against mongodb:
+
+```sh
+DATABASE=mongodb bin/test
+```
+
 The API tests can be run against the Heroku demo app as well:
 
 ```sh
@@ -210,7 +219,7 @@ From python:
 
 ```sh
 python
-import db
+import db.pg as db
 from datetime import datetime
 
 # create
@@ -233,13 +242,15 @@ Connecting with psql:
 
 ```
 psql -U postgres python-rest-api
+
+delete from urls;
 ```
 
 ## Talking to MongoDB
 
 ```sh
 python
-import mongo_db as db
+import db.mongodb as db
 from datetime import datetime
 
 # create
@@ -256,6 +267,15 @@ db.update('urls', id, {**url, 'url': 'http://www.expressen.se'})
 
 # delete
 db.delete('urls', id)
+```
+
+Connecting with the Mongo shell:
+
+```sh
+mongo python-rest-api
+
+db.urls.find()
+db.urls.remove({})
 ```
 
 ## How this app was created

@@ -1,14 +1,11 @@
-import db
+from db import db
 import re
 from datetime import datetime
 from json_schema import validate_schema, schema_error_response
 from types import SimpleNamespace
-from util import exception_response, invalid_response
+from util import exception_response, invalid_response, remove_none
 from psycopg2.errors import UniqueViolation, ForeignKeyViolation
 from json_schema import writable_doc
-
-def remove_none(doc):
-  return {k: v for k, v in doc.items() if v is not None}
 
 def empty_decorator(operation):
   return operation
@@ -56,7 +53,7 @@ def make_model_api(table_name, json_schema,
         data = {**data, 'created_at': datetime.now()}
       try:
         id = db.create(table_name, data)
-        created_doc = db.query_one(f'select * from {table_name} where id = %s', [id])
+        created_doc = db.find_one(table_name, id)
         return {'body': remove_none(created_doc)}
       except (UniqueViolation, ForeignKeyViolation) as db_error:
           return exception_response(db_error)
@@ -71,7 +68,7 @@ def make_model_api(table_name, json_schema,
         db.update(table_name, id, data)
       except (UniqueViolation, ForeignKeyViolation) as db_error:
           return exception_response(db_error)
-      updated_doc = db.query_one(f'select * from {table_name} where id = %s', [id])
+      updated_doc = db.find_one(table_name, id)
       if not updated_doc:
           return {'status': 404}
       return {'body': remove_none(updated_doc)}
@@ -79,7 +76,7 @@ def make_model_api(table_name, json_schema,
   @delete_decorator
   def delete(request):
       id = request.get('path_params')['id']
-      doc = db.query_one(f'select * from {table_name} where id = %s', [id])
+      doc = db.find_one(table_name, id)
       if not doc:
           return {'status': 404}
       db.delete(table_name, id)

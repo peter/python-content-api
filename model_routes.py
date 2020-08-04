@@ -3,7 +3,7 @@ id_parameter = {
     'in': 'path',
     'required': True,
     'schema': {
-        'type': 'integer'
+        'type': 'string'
     }
 }
 

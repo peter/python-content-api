@@ -35,11 +35,16 @@ def assert_valid_columns(columns):
   if invalid_columns:
     raise Exception(f'Invalid column names: {invalid_columns}')
 
+def with_id_str(doc):
+  if not doc or not 'id' in doc:
+    return doc
+  return {**doc, 'id': str(doc['id'])}
+
 def find(table_name):
-  return query(f'select * from {table_name}')
+  return [with_id_str(doc) for doc in query(f'select * from {table_name}')]
 
 def find_one(table_name, id):
-  return query_one(f'select * from {table_name} where id = %s', [id])
+  return with_id_str(query_one(f'select * from {table_name} where id = %s', [id]))
 
 def create(table_name, doc):
   columns = list(doc.keys())
