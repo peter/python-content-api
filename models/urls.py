@@ -34,7 +34,7 @@ def validate_url(request):
   if not data or not 'url' in data:
     return None
   try:
-    result = requests.get(data['url'])
+    result = requests.get(data['url'], timeout=5)
     if result.status_code != 200:
       return f'Expected status code 200 for for url {data["url"]} but got {result.status_code}'
   except:

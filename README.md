@@ -5,8 +5,9 @@
 * Minimal codebase - around 500 lines of Python (see [bin/loc](bin/loc))
 * Postgresql access with psycopg2 (see [db.py](db.py))
 * Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and [models/__init__.py](models/__init__.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
-* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is preliminary support for the Bottle framework in [bottle_app.py](bottle_app.py) but unfortunately I had issues getting Bottle to work reliably (it would spawn multiple processes and POST requests from Python would hang etc.). Similarly there is some support for Tornado in [tornado_app.py](tornado_app.py)
-but I had issues getting the Tornado app to pass the test suite.
+* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is also support for Bottle in [bottle_app.py](bottle_app.py) and Tornado in [tornado_app.py](tornado_app.py). With both Bottle and Tornado I had issues with the tests
+if posting a URL where the URL would point back to the server, i.e. the server
+would serve a request and in that request make a http request to itself. Once I changed [app_test.py](app_test.py) to use external URLs this was resolved.
 * Validation with jsonschema (see the `validate_schema` function in [json_schema.py](json_schema.py) and its usages in [request_validation.py](request_validation.py), and [app_test.py](app_test.py))
 * API testing with pytest and the request package (see [app_test.py](app_test.py))
 * OpenAPI/Swagger documentation generated from model routes (see [swagger.py](swagger.py))
@@ -114,7 +115,7 @@ createdb -U postgres python-rest-api
 python -c "import models; models.create_schema()"
 ```
 
-Start server:
+Start a Flask server:
 
 ```sh
 bin/start-dev
@@ -122,10 +123,19 @@ bin/start-dev
 open http://localhost:5000
 ```
 
+Use the `FRAMEWORK` env variable to start using a different web framework:
+
+```sh
+FRAMEWORK=bottle bin/start-dev
+FRAMEWORK=tornado bin/start-dev
+```
+
 ## Running the API tests
 
 ```sh
-bin/test
+FRAMEWORK=flask bin/test
+FRAMEWORK=bottle bin/test
+FRAMEWORK=tornado bin/test
 ```
 
 ## API Documentation (OpenAPI/Swagger)

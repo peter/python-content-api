@@ -30,23 +30,24 @@ class Handler(RequestHandler):
   def initialize(self, routes):
     self.routes = routes
   def handle_request(self, method, *params, **kwparams):
-    self.set_header('Content-Type', 'application/json')
     route = self.routes.get(method)
+    self.set_header('Content-Type', 'application/json')
     if not route:
       self.set_status(405)
       self.finish()
       return
     query = {k: self.get_argument(k) for k in self.request.query_arguments}
+    data = request_data(route['method'], self.request)
     response = route['handler']({
       'path_params': kwparams,
-      'data': request_data(route['method'], self.request),
+      'data': data,
       'headers': dict(self.request.headers),
       'query': query})
-    self.set_status(response.get('status', 200))
+    status = response.get('status', 200)
+    self.set_status(status)
     for k, v in response.get('headers', {}).items():
       self.set_header(k, v)
     self.finish(to_json(response.get('body', {})))
-    print(f'tornado debug: finished request {route["method"]} {route["path"]}')
   def get(self, *params, **kwparams):
     self.handle_request('GET', *params, **kwparams)
   def put(self, *params, **kwparams):
@@ -87,4 +88,5 @@ if __name__ == '__main__':
     enable_pretty_logging()
     port = int(os.environ.get('PORT', 5000))
     app.listen(port)
+    print(f'tornado starting on port {port}')
     tornado.ioloop.IOLoop.current().start()

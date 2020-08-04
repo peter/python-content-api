@@ -21,7 +21,7 @@ def first(the_iterable, condition = lambda x: True):
             return i
 
 def get_valid_doc():
-    return {'url': f'{BASE_URL}/v1/swagger.json'}
+    return {'url': f'https://www.google.com'}
 
 def test_crud():
     # Get swagger spec
@@ -82,7 +82,7 @@ def test_crud():
     list_doc = first(response.json()['data'], lambda d: d['id'] == doc['id'])
     assert list_doc['url'] == doc['url']
 
-    new_url = f'{BASE_URL}/v1/urls'
+    new_url = f'https://www.facebook.com'
 
     # Update 404
     response = requests.put(get_url_404, json={'url': new_url})
@@ -141,7 +141,7 @@ def test_update_full_doc():
     assert response.status_code == 400
 
     # Successful update with full doc
-    valid_doc = {**doc, 'url': f'{BASE_URL}/v1/urls'}
+    valid_doc = {**doc, 'url': f'https://www.facebook.com'}
     response = requests.put(get_url, json=valid_doc)
     assert response.status_code == 200
 
@@ -166,7 +166,7 @@ def test_create_invalid_url():
     response = requests.post(list_url, json=invalid_doc)
     assert response.status_code == 400
 
-    invalid_doc = {**doc, 'url': f'{BASE_URL}/foobar'}
+    invalid_doc = {**doc, 'url': f'https://www.example.com/foooobar'}
     response = requests.post(list_url, json=invalid_doc)
     print(response.json())
     assert response.status_code == 400

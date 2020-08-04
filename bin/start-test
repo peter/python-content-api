@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "start-test FRAMEWORK=$FRAMEWORK"
+
 if [ "$FRAMEWORK" = "bottle" ]; then
   PORT=5001 python bottle_app.py
 elif [ "$FRAMEWORK" = "tornado" ]; then
