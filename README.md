@@ -6,9 +6,7 @@
 * Postgresql access with psycopg2 (see [db/pg.py](db/pg.py))
 * MongoDB access with pymongo (see [db/mongodb.py](db/mongodb.py))
 * Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and [models/__init__.py](models/__init__.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
-* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is also support for Bottle in [bottle_app.py](bottle_app.py) and Tornado in [tornado_app.py](tornado_app.py). With both Bottle and Tornado I had issues with the tests
-if posting a URL where the URL would point back to the server, i.e. the server
-would serve a request and in that request make a http request to itself. Once I changed [app_test.py](app_test.py) to use external URLs this was resolved.
+* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is also support for Bottle in [bottle_app.py](bottle_app.py) and Tornado in [tornado_app.py](tornado_app.py). With both Bottle and Tornado I had issues with internal URLs, i.e. where the server would make requests back to itself. Once I changed [app_test.py](app_test.py) to use external URLs this was resolved.
 * Validation with jsonschema (see the `validate_schema` function in [json_schema.py](json_schema.py) and its usages in [request_validation.py](request_validation.py), and [app_test.py](app_test.py))
 * API testing with pytest and the request package (see [app_test.py](app_test.py))
 * OpenAPI/Swagger documentation generated from model routes (see [swagger.py](swagger.py))
@@ -19,7 +17,6 @@ TODO:
 
 * ID validation for pg and mongodb (MongoDB: bson.errors.InvalidId: '12345' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string)
 * Unique constraint for mongodb
-* Add missing path, invalid method, and invalid request json body to app_test.py
 * List endpoint should support page, limit, and filter params
 
 Some alternatives for building an API like this in Python with popular frameworks:
