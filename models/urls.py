@@ -30,7 +30,7 @@ db_schema = f'''
 db_migrations = []
 
 def validate_url(request):
-  data = request.get('data')
+  data = request.get('body')
   if not data or not 'url' in data:
     return None
   try:

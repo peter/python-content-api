@@ -32,7 +32,7 @@ def make_bottle_routes(model_routes):
         def bottle_handler(**kwargs):
             return bottle_response(handler({
                 'path_params': kwargs,
-                'data': request.json,
+                'body': request.json,
                 'headers': dict(request.headers),
                 'query': dict(request.query)}))
         bottle_handler.__name__ = f'{route["model_name"]}_{route["name"]}'

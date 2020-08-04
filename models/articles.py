@@ -35,9 +35,9 @@ def list_articles(query, headers, **request):
   return {'body': {'data': data}}
 
 @named_args
-def create_articles(data, **request):
-  ARTICLES.append(data)
-  return {'body': data}
+def create_articles(body, **request):
+  ARTICLES.append(body)
+  return {'body': body}
 
 routes = [
   {

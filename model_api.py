@@ -51,7 +51,7 @@ def make_model_api(table_name, json_schema,
 
   @create_decorator
   def create(request):
-      data = writable_doc(json_schema, request.get('data'))
+      data = writable_doc(json_schema, request.get('body'))
       if 'created_at' in json_schema['properties']:
         data = {**data, 'created_at': datetime.now()}
       try:
@@ -64,7 +64,7 @@ def make_model_api(table_name, json_schema,
   @update_decorator
   def update(request):
       id = request.get('path_params')['id']
-      data = writable_doc(json_schema, request.get('data'))
+      data = writable_doc(json_schema, request.get('body'))
       try:
         if 'updated_at' in json_schema['properties']:
           data = {**data, 'updated_at': datetime.now()}

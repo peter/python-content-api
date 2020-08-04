@@ -16,7 +16,6 @@ would serve a request and in that request make a http request to itself. Once I 
 
 TODO:
 
-* Rename request.data to request.body for consistency
 * Add missing path, invalid method, and invalid request json body to app_test.py
 * List endpoint should support page, limit, and filter params
 
@@ -37,7 +36,7 @@ Some alternatives for building an API like this in Python with popular framework
 A route `handler` will receive a single argument `request` dict with these attributes:
 
 * `path_params` - dict with parameters from the path, such as `id` for `/v1/urls/<id>`
-* `data` - dict with body data for `POST` and `PUT` requests
+* `body` - dict with body data for `POST` and `PUT` requests
 * `headers` - dict with HTTP request headers
 * `query` - dict with query parameters, such as `{'page': 2}` for `/v1/articles?page=2`
 

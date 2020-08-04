@@ -18,7 +18,7 @@ class JsonEncoder(json.JSONEncoder):
 def to_json(data):
   return json.dumps(data, indent=4, cls=JsonEncoder)
 
-def request_data(method, request):
+def request_body(method, request):
   if not method in ['PUT', 'POST']:
     return None
   try:
@@ -37,10 +37,10 @@ class Handler(RequestHandler):
       self.finish()
       return
     query = {k: self.get_argument(k) for k in self.request.query_arguments}
-    data = request_data(route['method'], self.request)
+    body = request_body(route['method'], self.request)
     response = route['handler']({
       'path_params': kwparams,
-      'data': data,
+      'body': body,
       'headers': dict(self.request.headers),
       'query': query})
     status = response.get('status', 200)

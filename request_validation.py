@@ -55,7 +55,7 @@ def decorate_handler_with_validation(route):
     data_schema = route.get('request_schema')
     if data_schema:
       write_schema = writable_schema(data_schema)
-      data = writable_doc(data_schema, request.get('data'))
+      data = writable_doc(data_schema, request.get('body'))
       schema_error = validate_schema(data, write_schema)
       if schema_error:
         return schema_error_response(schema_error)
