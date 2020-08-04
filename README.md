@@ -235,6 +235,29 @@ Connecting with psql:
 psql -U postgres python-rest-api
 ```
 
+## Talking to MongoDB
+
+```sh
+python
+import mongo_db as db
+from datetime import datetime
+
+# create
+id = db.create('urls', {'url': 'http://www.aftonbladet.se', 'created_at': datetime.now()})
+
+# list
+db.find('urls')
+
+# get
+url = db.find_one('urls', id)
+
+# update
+db.update('urls', id, {**url, 'url': 'http://www.expressen.se'})
+
+# delete
+db.delete('urls', id)
+```
+
 ## How this app was created
 
 Create and activate virtual python env:
@@ -393,6 +416,8 @@ BASE_URL=https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production pyth
 * [ReDoc - API Console feature request](https://github.com/Redocly/redoc/issues/53)
 * [Redoc.ly Developer Portal (Commercial)](https://redoc.ly/developer-portal)
 * [How to build a REST API with Tornado](https://medium.com/octopus-labs-london/how-to-build-a-rest-api-in-python-with-tornado-fc717c33824a)
+* [MongoDB Tutorial](https://pymongo.readthedocs.io/en/stable/tutorial.html)
+* [MongoDB Collection Operations](https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html)
 
 Serverless (AWS Lambda) deployment:
 

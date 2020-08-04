@@ -35,7 +35,13 @@ def assert_valid_columns(columns):
   if invalid_columns:
     raise Exception(f'Invalid column names: {invalid_columns}')
 
-def insert(table_name, doc):
+def find(table_name):
+  return query(f'select * from {table_name}')
+
+def find_one(table_name, id):
+  return query_one(f'select * from {table_name} where id = %s', [id])
+
+def create(table_name, doc):
   columns = list(doc.keys())
   assert_valid_columns(columns)
   values = [doc[k] for k in columns]
@@ -54,3 +60,6 @@ def update(table_name, id, doc):
   sql = f'UPDATE {table_name} SET {", ".join(interpolate_values)} where id = %s'
   print(sql)
   return execute(sql, values)
+
+def delete(table_name, id):
+  return execute(f'DELETE from {table_name} where id = %s', [id])

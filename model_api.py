@@ -38,13 +38,13 @@ def make_model_api(table_name, json_schema,
 
   @list_decorator
   def list(request):
-      docs = [remove_none(doc) for doc in db.query(f'select * from {table_name}')]
+      docs = [remove_none(doc) for doc in db.find(table_name)]
       return {'body': {'data': docs}}
 
   @get_decorator
   def get(request):
       id = request.get('path_params')['id']
-      doc = db.query_one(f'select * from {table_name} where id = %s', [id])
+      doc = db.find_one(table_name, id)
       if not doc:
           return {'status': 404}
       return {'body': remove_none(doc)}
@@ -55,7 +55,7 @@ def make_model_api(table_name, json_schema,
       if 'created_at' in json_schema['properties']:
         data = {**data, 'created_at': datetime.now()}
       try:
-        id = db.insert(table_name, data)
+        id = db.create(table_name, data)
         created_doc = db.query_one(f'select * from {table_name} where id = %s', [id])
         return {'body': remove_none(created_doc)}
       except (UniqueViolation, ForeignKeyViolation) as db_error:
@@ -82,7 +82,7 @@ def make_model_api(table_name, json_schema,
       doc = db.query_one(f'select * from {table_name} where id = %s', [id])
       if not doc:
           return {'status': 404}
-      db.execute(f'DELETE from {table_name} where id = %s', [id])
+      db.delete(table_name, id)
       return {'body': remove_none(doc)}
 
   api = {
