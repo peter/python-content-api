@@ -155,6 +155,14 @@ def test_update_full_doc():
     response = requests.delete(get_url)
     assert response.status_code == 200
 
+def test_missing_path():
+    response = requests.get(f'{BASE_URL}/fooooooobar')
+    assert response.status_code == 404
+
+def test_method_not_allowed():
+    response = requests.put(f'{BASE_URL}/v1/urls')
+    assert response.status_code == 405
+
 def test_create_empty():
     response = requests.post(list_url)
     assert response.status_code == 400

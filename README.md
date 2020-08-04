@@ -138,6 +138,12 @@ FRAMEWORK=bottle bin/test
 FRAMEWORK=tornado bin/test
 ```
 
+The API tests can be run against the Heroku demo app as well:
+
+```sh
+BASE_URL=https://python-heroku-rest-api.herokuapp.com pytest -s -vv app_test.py
+```
+
 ## API Documentation (OpenAPI/Swagger)
 
 Interactive HTML docs:
