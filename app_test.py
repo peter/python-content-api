@@ -167,6 +167,11 @@ def test_create_empty():
     response = requests.post(list_url)
     assert response.status_code == 400
 
+def test_invalid_json_data():
+    invalid_json = 'foo: bar'
+    response = requests.post(list_url, data=invalid_json)
+    assert response.status_code == 400
+
 def test_create_invalid_url():
     doc = get_valid_doc()
 
