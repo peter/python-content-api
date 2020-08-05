@@ -15,7 +15,6 @@
 
 TODO:
 
-* ID validation for pg and mongodb (MongoDB: bson.errors.InvalidId: '12345' is not a valid ObjectId, it must be a 12-byte input or a 24-character hex string)
 * Unique constraint for mongodb
 * List endpoint should support page, limit, and filter params
 
@@ -175,7 +174,7 @@ curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.googl
 
 # successful create
 export URL=$(curl -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com"}' $BASE_URL/v1/urls)
-export ID=$(echo $URL | jq '.id')
+export ID=$(echo $URL | jq --raw-output '.id')
 
 # list
 curl -i $BASE_URL/v1/urls

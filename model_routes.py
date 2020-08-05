@@ -1,10 +1,10 @@
+from db import db
+
 id_parameter = {
     'name': 'id',
     'in': 'path',
     'required': True,
-    'schema': {
-        'type': 'string'
-    }
+    'schema': db.id_json_schema
 }
 
 default_route_names = ['list', 'get', 'create', 'update', 'delete']

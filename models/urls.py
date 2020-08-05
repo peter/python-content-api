@@ -3,13 +3,14 @@ import requests
 from util import invalid_response
 from model_api import make_model_api_with_validation
 from model_routes import get_model_routes
+from db import db
 
 name = 'urls'
 
 json_schema = {
   'type': 'object',
   'properties': {
-      'id': {'type': 'string', 'x-meta': {'writable': False}},
+      'id': db.id_json_schema,
       'url': {'type': 'string', 'format': 'uri', 'pattern': '^https?://.+$'},
       'created_at': {'type': 'string', 'x-meta': {'writable': False}},
       'updated_at': {'type': 'string', 'x-meta': {'writable': False}}
