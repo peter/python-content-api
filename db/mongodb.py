@@ -3,9 +3,9 @@ import pymongo
 from bson.objectid import ObjectId
 from util import remove_none
 
-DATABASE_URL = os.environ.get('MONGODB_URI', os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/'))
+DATABASE_URL = os.environ.get('MONGODB_URI', os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/python-rest-api'))
 client = pymongo.MongoClient(DATABASE_URL)
-db = client['python-rest-api']
+db = client.get_default_database()
 
 def with_id_str(doc):
   if not doc or not '_id' in doc:
