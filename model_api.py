@@ -26,10 +26,13 @@ def make_model_api(table_name, json_schema,
           'data': {
             'type': 'array',
             'items': json_schema
-          }
+          },
+          'count': {'type': 'integer'},
+          'limit': {'type': 'integer'},
+          'offset': {'type': 'integer'}
         },
         'additionalProperties': False,
-        'required': ['data']
+        'required': ['data', 'count', 'limit', 'offset']
       }
     else:
       return json_schema
