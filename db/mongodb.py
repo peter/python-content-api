@@ -12,10 +12,16 @@ def with_id_str(doc):
     return doc
   return remove_none({**doc, 'id': str(doc['_id']), '_id': None})
 
-id_json_schema = {'type': 'string', 'pattern': '^[a-z0-9]{24}$', 'x-meta': {'writable': False}}
-
 def count(collection):
   return db[collection].count_documents()
+
+#############################################################
+#
+# Database Interface
+#
+#############################################################
+
+id_json_schema = {'type': 'string', 'pattern': '^[a-z0-9]{24}$', 'x-meta': {'writable': False}}
 
 def find(collection):
   return [with_id_str(doc) for doc in list(db[collection].find({}))]

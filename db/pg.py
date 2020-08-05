@@ -35,6 +35,12 @@ def assert_valid_columns(columns):
   if invalid_columns:
     raise Exception(f'Invalid column names: {invalid_columns}')
 
+#############################################################
+#
+# Database Interface
+#
+#############################################################
+
 id_json_schema = {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}}
 
 def find(table_name):
