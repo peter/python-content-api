@@ -15,6 +15,7 @@
 
 TODO:
 
+* Try running Mongodb on Heroku (use MONGODB_URI if available and set DATABASE=mongodb)
 * Unique constraint for mongodb
 * List endpoint should support page, limit, and filter params
 
@@ -333,6 +334,12 @@ Add the [heroku-postgresql addon](https://elements.heroku.com/addons/heroku-post
 
 ```sh
 heroku addons:create heroku-postgresql:hobby-dev
+```
+
+For MongoDB you can use the [mongolab addon](https://elements.heroku.com/addons/mongolab):
+
+```sh
+heroku addons:create mongolab:sandbox
 ```
 
 Test the app:
