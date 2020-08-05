@@ -1,7 +1,9 @@
+from db import db
+
 json_schema = {
   'type': 'object',
   'properties': {
-    'id': {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}},
+    'id': db.id_json_schema,
     'url_id': {'type': 'integer'},
     'data': {'type': 'string'},
     'created_at': {'type': 'string', 'x-meta': {'writable': False}}
