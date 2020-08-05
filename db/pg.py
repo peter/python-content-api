@@ -43,8 +43,11 @@ def assert_valid_columns(columns):
 
 id_json_schema = {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}}
 
-def find(table_name):
-  return query(f'select * from {table_name}')
+def count(table_name):
+  return query_one(f'select count(*) from {table_name}')['count']
+
+def find(table_name, limit=100, offset=0):
+  return query(f'select * from {table_name} LIMIT %s OFFSET %s', (limit, offset))
 
 def find_one(table_name, id):
   return query_one(f'select * from {table_name} where id = %s', [id])

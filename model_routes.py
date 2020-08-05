@@ -7,6 +7,21 @@ id_parameter = {
     'schema': db.id_json_schema
 }
 
+list_parameters = [
+    {
+        'name': 'limit',
+        'in': 'query',
+        'required': False,
+        'schema': {'type': 'integer', 'minimum': 1, 'maximum': 100}
+    },
+    {
+        'name': 'offset',
+        'in': 'query',
+        'required': False,
+        'schema': {'type': 'integer', 'minimum': 0}
+    }
+]
+
 default_route_names = ['list', 'get', 'create', 'update', 'delete']
 
 def get_model_routes(name, json_schema, api, route_names = default_route_names):
@@ -19,6 +34,7 @@ def get_model_routes(name, json_schema, api, route_names = default_route_names):
             'name': 'list',
             'handler': api.list,
             'model_name': name,
+            'parameters': list_parameters,
             'response_schema': api.response_schema('list')
         },
         {

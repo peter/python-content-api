@@ -3,6 +3,7 @@ import re
 from datetime import datetime
 from json_schema import validate_schema, schema_error_response
 from types import SimpleNamespace
+import util
 from util import exception_response, invalid_response, remove_none
 from psycopg2.errors import UniqueViolation, ForeignKeyViolation
 from json_schema import writable_doc
@@ -35,8 +36,12 @@ def make_model_api(table_name, json_schema,
 
   @list_decorator
   def list(request):
-      docs = [remove_none(doc) for doc in db.find(table_name)]
-      return {'body': {'data': docs}}
+      limit = int(util.get(request, 'query.limit', 100))
+      offset = int(util.get(request, 'query.offset', 0))
+      count = db.count(table_name)
+      docs = [remove_none(doc) for doc in db.find(table_name, limit, offset)]
+      body = {'count': count, 'limit': limit, 'offset': offset, 'data': docs}
+      return {'body': body}
 
   @get_decorator
   def get(request):

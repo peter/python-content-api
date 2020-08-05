@@ -15,9 +15,9 @@
 
 TODO:
 
-* Try running Mongodb on Heroku (use MONGODB_URI if available and set DATABASE=mongodb)
+* Add test for list endpoint limit, offset, count
+* List endpoint should support filter params
 * Unique constraint for mongodb
-* List endpoint should support page, limit, and filter params
 
 Some alternatives for building an API like this in Python with popular frameworks:
 
