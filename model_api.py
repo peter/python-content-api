@@ -11,6 +11,15 @@ from json_schema import writable_doc
 def empty_decorator(operation):
   return operation
 
+def is_valid_sort(json_schema, sort):
+  if not sort:
+    return True
+  for item in sort.split(','):
+    name = item[1:] if item.startswith('-') else item
+    if not name in json_schema['properties'].keys():
+      return False
+  return True
+
 def make_model_api(table_name, json_schema,
   list_decorator=empty_decorator,
   get_decorator=empty_decorator,
@@ -42,6 +51,8 @@ def make_model_api(table_name, json_schema,
       limit = int(util.get(request, 'query.limit', 100))
       offset = int(util.get(request, 'query.offset', 0))
       sort = util.get(request, 'query.sort', '-updated_at')
+      if not is_valid_sort(json_schema, sort):
+        return invalid_response('Invalid sort parameter, must be on the format column1,column2,column3... For descending sort, use -column1')
       count = db.count(table_name)
       docs = [remove_none(doc) for doc in db.find(table_name, limit, offset, sort)]
       body = {'count': count, 'limit': limit, 'offset': offset, 'data': docs}

@@ -24,7 +24,8 @@ list_parameters = [
         'name': 'sort',
         'in': 'query',
         'required': False,
-        'schema': {'type': 'string'}
+        'schema': {'type': 'string'},
+        'description': 'Sort order on the format column1,column2,column3... For descending sort, use -column1'
     }
 ]
 
