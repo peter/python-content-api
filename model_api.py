@@ -38,7 +38,8 @@ def make_model_api(table_name, json_schema,
           },
           'count': {'type': 'integer'},
           'limit': {'type': 'integer'},
-          'offset': {'type': 'integer'}
+          'offset': {'type': 'integer'},
+          'sort': {'type': 'string'}
         },
         'additionalProperties': False,
         'required': ['data', 'count', 'limit', 'offset']
@@ -50,12 +51,12 @@ def make_model_api(table_name, json_schema,
   def list(request):
       limit = int(util.get(request, 'query.limit', 100))
       offset = int(util.get(request, 'query.offset', 0))
-      sort = util.get(request, 'query.sort', '-updated_at')
+      sort = util.get(request, 'query.sort') or '-updated_at'
       if not is_valid_sort(json_schema, sort):
         return invalid_response('Invalid sort parameter, must be on the format column1,column2,column3... For descending sort, use -column1')
       count = db.count(table_name)
       docs = [remove_none(doc) for doc in db.find(table_name, limit, offset, sort)]
-      body = {'count': count, 'limit': limit, 'offset': offset, 'data': docs}
+      body = {'count': count, 'limit': limit, 'offset': offset, 'sort': sort, 'data': docs}
       return {'body': body}
 
   @get_decorator

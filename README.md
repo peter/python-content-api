@@ -15,7 +15,6 @@
 
 TODO:
 
-* Test list endpoint sort param. Validate this param?
 * List endpoint should support filter params
 * Unique constraint for mongodb
 

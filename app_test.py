@@ -122,7 +122,7 @@ def test_crud():
     response = requests.get(get_url)
     assert response.status_code == 404
 
-def test_count_limit_offset():
+def test_count_limit_offset_sort():
     response = requests.get(list_url)
     assert response.status_code == 200
     assert response.json()['offset'] == 0
@@ -170,6 +170,23 @@ def test_count_limit_offset():
     assert response.json()['limit'] == 1
     assert len(response.json()['data']) == 1
     assert response.json()['data'][0]['url'] == doc2['url']
+
+    # An empty sort is ignored and default sort is used
+    response = requests.get(list_url)
+    list_response = response.json()
+    response = requests.get(f'{list_url}?sort=')
+    assert response.json() == list_response
+    assert response.json()['sort'] == '-updated_at'
+
+    # An invalid sort yields 400
+    response = requests.get(f'{list_url}?sort=123')
+    assert response.status_code == 400
+
+    # A valid sort works
+    response = requests.get(f'{list_url}?sort=created_at')
+    assert response.status_code == 200
+    assert response.json()['sort'] == 'created_at'
+    assert parse_date(response.json()['data'][0]['created_at']) < parse_date(response.json()['data'][-1]['created_at'])
 
 def test_update_full_doc():
     # Successful create
