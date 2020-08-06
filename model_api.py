@@ -41,8 +41,9 @@ def make_model_api(table_name, json_schema,
   def list(request):
       limit = int(util.get(request, 'query.limit', 100))
       offset = int(util.get(request, 'query.offset', 0))
+      order = '-updated_at'
       count = db.count(table_name)
-      docs = [remove_none(doc) for doc in db.find(table_name, limit, offset)]
+      docs = [remove_none(doc) for doc in db.find(table_name, limit, offset, order)]
       body = {'count': count, 'limit': limit, 'offset': offset, 'data': docs}
       return {'body': body}
 
@@ -58,7 +59,8 @@ def make_model_api(table_name, json_schema,
   def create(request):
       data = writable_doc(json_schema, request.get('body'))
       if 'created_at' in json_schema['properties']:
-        data = {**data, 'created_at': datetime.now()}
+        now = datetime.now()
+        data = {**data, 'created_at': now, 'updated_at': now}
       try:
         id = db.create(table_name, data)
         created_doc = db.find_one(table_name, id)

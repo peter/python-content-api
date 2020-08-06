@@ -35,6 +35,17 @@ def assert_valid_columns(columns):
   if invalid_columns:
     raise Exception(f'Invalid column names: {invalid_columns}')
 
+def order_sql(order):
+  if not order:
+    return ''
+  def parse_order(item):
+    direction = 'DESC' if item.startswith('-') else 'ASC'
+    name = item[1:] if item.startswith('-') else item
+    return {'direction': direction, 'name': name}
+  columns = [parse_order(item) for item in order.split(',')]
+  assert_valid_columns([c['name'] for c in columns])
+  return 'ORDER BY ' + ', '.join([f'{c["name"]} {c["direction"]}' for c in columns])
+
 #############################################################
 #
 # Database Interface
@@ -46,8 +57,8 @@ id_json_schema = {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}
 def count(table_name):
   return query_one(f'select count(*) from {table_name}')['count']
 
-def find(table_name, limit=100, offset=0):
-  return query(f'select * from {table_name} LIMIT %s OFFSET %s', (limit, offset))
+def find(table_name, limit=100, offset=0, order=None):
+  return query(f'select * from {table_name} {order_sql(order)} LIMIT %s OFFSET %s', (limit, offset))
 
 def find_one(table_name, id):
   return query_one(f'select * from {table_name} where id = %s', [id])

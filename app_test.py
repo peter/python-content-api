@@ -5,6 +5,7 @@ import uuid
 from util import get, omit
 from json_schema import validate_schema
 from db import DATABASE
+from dateutil.parser import parse as parse_date
 
 BASE_URL = os.getenv('BASE_URL', 'http://localhost:5001')
 
@@ -121,6 +122,55 @@ def test_crud():
     response = requests.get(get_url)
     assert response.status_code == 404
 
+def test_count_limit_offset():
+    response = requests.get(list_url)
+    assert response.status_code == 200
+    assert response.json()['offset'] == 0
+    assert response.json()['limit'] == 100
+    count_before = response.json()['count']
+
+    # Invalid offset yields 400
+    response = requests.get(f'{list_url}?offset=foo')
+    assert response.status_code == 400
+
+    # Invalid limit yields 400
+    response = requests.get(f'{list_url}?limit=foo')
+    assert response.status_code == 400
+
+    doc1 = get_valid_doc()
+    doc2 = get_valid_doc()
+
+    # Create doc2
+    response = requests.post(list_url, json=doc2)
+    assert response.status_code == 200
+
+    # Check count incremented by 1
+    response = requests.get(list_url)
+    assert response.status_code == 200
+    assert response.json()['count'] == (count_before + 1)
+
+    # Create doc1
+    response = requests.post(list_url, json=doc1)
+    assert response.status_code == 200
+
+    # List only doc1
+    response = requests.get(f'{list_url}?offset=0&limit=1')
+    assert response.status_code == 200
+    assert response.json()['count'] == (count_before + 2)
+    assert response.json()['offset'] == 0
+    assert response.json()['limit'] == 1
+    assert len(response.json()['data']) == 1
+    assert response.json()['data'][0]['url'] == doc1['url']
+
+    # List only doc2
+    response = requests.get(f'{list_url}?offset=1&limit=1')
+    assert response.status_code == 200
+    assert response.json()['count'] == (count_before + 2)
+    assert response.json()['offset'] == 1
+    assert response.json()['limit'] == 1
+    assert len(response.json()['data']) == 1
+    assert response.json()['data'][0]['url'] == doc2['url']
+
 def test_update_full_doc():
     # Successful create
     doc = get_valid_doc()
@@ -152,7 +202,9 @@ def test_update_full_doc():
     response = requests.get(get_url)
     assert response.status_code == 200
     assert response.json()['updated_at']
-    assert omit(response.json(), ['updated_at']) == valid_doc
+    print(response.json()['updated_at'])
+    assert omit(response.json(), ['updated_at']) == omit(valid_doc, ['updated_at'])
+    assert parse_date(response.json()['updated_at']) > parse_date(valid_doc['updated_at'])
 
     # Successful delete
     response = requests.delete(get_url)
