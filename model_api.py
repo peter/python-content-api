@@ -41,9 +41,9 @@ def make_model_api(table_name, json_schema,
   def list(request):
       limit = int(util.get(request, 'query.limit', 100))
       offset = int(util.get(request, 'query.offset', 0))
-      order = '-updated_at'
+      sort = util.get(request, 'query.sort', '-updated_at')
       count = db.count(table_name)
-      docs = [remove_none(doc) for doc in db.find(table_name, limit, offset, order)]
+      docs = [remove_none(doc) for doc in db.find(table_name, limit, offset, sort)]
       body = {'count': count, 'limit': limit, 'offset': offset, 'data': docs}
       return {'body': body}
 

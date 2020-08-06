@@ -13,14 +13,14 @@ def with_id_str(doc):
     return doc
   return remove_none({**doc, 'id': str(doc['_id']), '_id': None})
 
-def sort(order):
-  if not order:
+def parse_sort(sort):
+  if not sort:
     return None
-  def parse_order(item):
+  def parse_item(item):
     name = item[1:] if item.startswith('-') else item
     direction = -1 if item.startswith('-') else 1
     return (name, direction)
-  return [parse_order(item) for item in order.split(',')]
+  return [parse_item(item) for item in sort.split(',')]
 
 #############################################################
 #
@@ -33,8 +33,8 @@ id_json_schema = {'type': 'string', 'pattern': '^[a-z0-9]{24}$', 'x-meta': {'wri
 def count(collection):
   return db[collection].count_documents({})
 
-def find(collection, limit=100, offset=0, order=None):
-  return [with_id_str(doc) for doc in list(db[collection].find(limit=limit, skip=offset, sort=sort(order)))]
+def find(collection, limit=100, offset=0, sort=None):
+  return [with_id_str(doc) for doc in list(db[collection].find(limit=limit, skip=offset, sort=parse_sort(sort)))]
 
 def find_one(collection, id):
   return with_id_str(db[collection].find_one({'_id': ObjectId(id)}))

@@ -19,6 +19,12 @@ list_parameters = [
         'in': 'query',
         'required': False,
         'schema': {'type': 'integer', 'minimum': 0}
+    },
+    {
+        'name': 'sort',
+        'in': 'query',
+        'required': False,
+        'schema': {'type': 'string'}
     }
 ]
 
