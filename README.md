@@ -15,7 +15,6 @@
 
 TODO:
 
-* Add test for list endpoint limit, offset, count
 * List endpoint should support filter params
 * Unique constraint for mongodb
 
