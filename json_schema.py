@@ -20,7 +20,7 @@ def coerce_value(value, value_schema):
       return float(value)
     elif value_type == 'boolean':
       return value not in ['0', 'false', 'FALSE', 'f']
-    elif value_type == 'string' and get(value_schema, 'x-meta.format') == 'date-time':
+    elif value_type == 'string' and get(value_schema, 'format') == 'date-time':
       return parse_date(value)
     else:
       return value

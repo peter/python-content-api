@@ -2,10 +2,12 @@ import os
 import json
 import requests
 import uuid
+import re
 from util import get, omit
 from json_schema import validate_schema
 from db import DATABASE
 from dateutil.parser import parse as parse_date
+import urllib.parse
 
 BASE_URL = os.getenv('BASE_URL', 'http://localhost:5001')
 
@@ -122,7 +124,7 @@ def test_crud():
     response = requests.get(get_url)
     assert response.status_code == 404
 
-def test_count_limit_offset_sort():
+def test_list_query_params():
     response = requests.get(list_url)
     assert response.status_code == 200
     assert response.json()['offset'] == 0
@@ -143,6 +145,7 @@ def test_count_limit_offset_sort():
     # Create doc2
     response = requests.post(list_url, json=doc2)
     assert response.status_code == 200
+    doc2 = response.json()
 
     # Check count incremented by 1
     response = requests.get(list_url)
@@ -152,8 +155,9 @@ def test_count_limit_offset_sort():
     # Create doc1
     response = requests.post(list_url, json=doc1)
     assert response.status_code == 200
+    doc1 = response.json()
 
-    # List only doc1
+    # List only doc1 (limit/offset)
     response = requests.get(f'{list_url}?offset=0&limit=1')
     assert response.status_code == 200
     assert response.json()['count'] == (count_before + 2)
@@ -162,7 +166,7 @@ def test_count_limit_offset_sort():
     assert len(response.json()['data']) == 1
     assert response.json()['data'][0]['url'] == doc1['url']
 
-    # List only doc2
+    # List only doc2 (limit/offset)
     response = requests.get(f'{list_url}?offset=1&limit=1')
     assert response.status_code == 200
     assert response.json()['count'] == (count_before + 2)
@@ -187,6 +191,36 @@ def test_count_limit_offset_sort():
     assert response.status_code == 200
     assert response.json()['sort'] == 'created_at'
     assert parse_date(response.json()['data'][0]['created_at']) < parse_date(response.json()['data'][-1]['created_at'])
+
+    # Filter - invalid name
+    response = requests.get(f'{list_url}?filter.foo=123')
+    assert response.status_code == 400
+
+    # Filter - invalid op
+    response = requests.get(f'{list_url}?filter.url[foo]=123')
+    assert response.status_code == 400
+
+    # Filter - eq
+    response = requests.get(f'{list_url}?filter.url={doc1["url"]}')
+    assert len(response.json()['data']) == 1
+    assert response.json()['data'][0]['url'] == doc1['url']
+
+    # Filter - contains
+    (uuid1,) = re.search('uuid=(.+)', doc1['url']).groups()
+    response = requests.get(f'{list_url}?filter.url[contains]={uuid1}')
+    assert len(response.json()['data']) == 1
+    assert response.json()['data'][0]['url'] == doc1['url']
+
+    # Filter - gt
+    created_at_gt = urllib.parse.quote(doc2['created_at'])
+    response = requests.get(f'{list_url}?filter.created_at[gt]={created_at_gt}')
+    assert len(response.json()['data']) == 1
+    assert response.json()['data'][0]['url'] == doc1['url']
+
+    # Filter - lt
+    created_at_lt = urllib.parse.quote(doc1['created_at'])
+    response = requests.get(f'{list_url}?filter.created_at[lt]={created_at_lt}')
+    assert response.json()['data'][0]['url'] == doc2['url']
 
 def test_update_full_doc():
     # Successful create
