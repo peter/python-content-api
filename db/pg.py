@@ -42,6 +42,10 @@ def where_sql(filter):
   def clause(column):
     if filter[column]['op'] == 'contains':
       return f'{column} like %s'
+    elif filter[column]['op'] == 'lt':
+      return f'{column} < %s'
+    elif filter[column]['op'] == 'gt':
+      return f'{column} > %s'
     else:
       return f'{column} = %s'
   def sql_value(column):

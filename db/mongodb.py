@@ -26,7 +26,7 @@ def parse_filter(filter):
   if not filter:
     return None
   def filter_value(v):
-    op = 'regex' if v['op'] == 'contains' else 'eq'
+    op = 'regex' if v['op'] == 'contains' else v['op']
     return {f'${op}': v['value']}
   return {k: filter_value(v) for k, v in filter.items()}
 

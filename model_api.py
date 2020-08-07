@@ -22,7 +22,7 @@ def is_valid_sort(json_schema, sort):
 
 def filter_param_pattern(json_schema):
   property_names = json_schema['properties'].keys()
-  return f'^filter\\.({"|".join(property_names)})(?:\\[(contains)\\])?$'
+  return f'^filter\\.({"|".join(property_names)})(?:\\[(contains|lt|gt)\\])?$'
 
 def parse_filter(json_schema, query):
   pattern = re.compile(filter_param_pattern(json_schema))
@@ -97,7 +97,7 @@ def make_model_api(table_name, json_schema,
   @create_decorator
   def create(request):
       data = writable_doc(json_schema, request.get('body'))
-      if 'created_at' in json_schema['properties']:
+      if 'created_at' in json_schema['properties'] and 'updated_at' in json_schema['properties']:
         now = datetime.now()
         data = {**data, 'created_at': now, 'updated_at': now}
       try:

@@ -6,7 +6,8 @@ json_schema = {
     'id': db.id_json_schema,
     'url_id': {'type': 'integer'},
     'data': {'type': 'string'},
-    'created_at': {'type': 'string', 'x-meta': {'writable': False}}
+    'created_at': {'type': 'string', 'format': 'date-time', 'x-meta': {'writable': False}},
+    'updated_at': {'type': 'string', 'format': 'date-time', 'x-meta': {'writable': False}}
   },
   'additionalProperties': False,
   'required': ['id', 'url_id', 'data', 'created_at']

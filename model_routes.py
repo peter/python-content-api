@@ -37,7 +37,7 @@ def list_parameters(json_schema):
                 'namePattern': filter_param_pattern(json_schema)
             },
             'schema': {'type': 'string'},
-            'description': 'Filters to query by, i.e. filter.column=foobar or filter.column[contains]=foobar'
+            'description': 'Filters to query by, i.e. filter.column=foobar (equals), filter.column[contains]=foobar (contains/includes), filter.created_at[lt]=2020-08-06%2009:31:28.092946 (less than), filter.created_at[lt]=2020-08-06%2009:31:28.092946 (greater than)'
         }
     ]
 
