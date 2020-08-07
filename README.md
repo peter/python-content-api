@@ -2,7 +2,7 @@
 
 ## Features
 
-* Minimal codebase - around 500 lines of Python (see [bin/loc](bin/loc))
+* Minimal codebase - less than 1000 lines of Python (see [bin/loc](bin/loc))
 * Postgresql access with psycopg2 (see [db/pg.py](db/pg.py))
 * MongoDB access with pymongo (see [db/mongodb.py](db/mongodb.py))
 * Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and [models/__init__.py](models/__init__.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
