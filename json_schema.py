@@ -11,7 +11,7 @@ def validate_schema(instance, schema):
 
 def coerce_value(value, value_schema):
   value_type = get(value_schema, 'type')
-  if not value_type or value is None:
+  if not value_type or type(value) != str:
     return value
   try:
     if value_type == 'integer' or (value_type == 'number' and '.' not in value):

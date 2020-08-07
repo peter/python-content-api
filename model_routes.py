@@ -1,5 +1,5 @@
 from db import db
-from model_api import filter_param_pattern
+from model_api import filter_param_pattern, filter_param_schema
 
 id_parameter = {
     'name': 'id',
@@ -30,7 +30,7 @@ def list_parameters(json_schema):
             'description': 'Sort order on the format column1,column2,column3... For descending sort, use -column1'
         },
         {
-            'name': 'filter',
+            'name': 'filter.*',
             'in': 'query',
             'required': False,
             'x-meta': {
@@ -38,6 +38,13 @@ def list_parameters(json_schema):
             },
             'schema': {'type': 'string'},
             'description': 'Filters to query by, i.e. filter.column=foobar (equals), filter.column[contains]=foobar (contains/includes), filter.created_at[lt]=2020-08-06%2009:31:28.092946 (less than), filter.created_at[lt]=2020-08-06%2009:31:28.092946 (greater than)'
+        },
+        {
+            'name': 'filter',
+            'in': 'query',
+            'required': False,
+            'content': {'application/json': {'schema': filter_param_schema(json_schema)}},
+            'description': 'Filter to query by on JSON format, i.e. [{"name":"url","value":"foobar","op":"contains"}]'
         }
     ]
 

@@ -24,6 +24,29 @@ def filter_param_pattern(json_schema):
   property_names = json_schema['properties'].keys()
   return f'^filter\\.({"|".join(property_names)})(?:\\[(contains|lt|gt)\\])?$'
 
+def filter_param_schema(json_schema):
+  property_names = list(json_schema['properties'].keys())
+  return {
+    'type': 'array',
+    'items': {
+      'type': 'object',
+      'properties': {
+        'name': {'enum': property_names},
+        'value': {
+          'type': 'string',
+          'x-meta': {
+            'types': ['string', 'boolean', 'number'],
+          }
+        },
+        'op': {
+          'enum': ['eq', 'contains', 'lt', 'gt']
+        }
+      },
+      'additionalProperties': False,
+      'required': ['name', 'value', 'op']
+    }
+  }
+
 def parse_filter(json_schema, query):
   pattern = re.compile(filter_param_pattern(json_schema))
   result = {}

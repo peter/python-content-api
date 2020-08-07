@@ -15,8 +15,8 @@
 
 TODO:
 
+* Alternative filter param based on JSON data?
 * OpenAPI supports parameter default values
-* List endpoint should support filter param: add tests, docs, and lt/gt support
 * Unique constraint for mongodb
 * Add a change log
 
