@@ -1,4 +1,4 @@
-# Example Python REST API
+# Python Content API
 
 ## Features
 
