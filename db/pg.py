@@ -35,6 +35,26 @@ def assert_valid_columns(columns):
   if invalid_columns:
     raise Exception(f'Invalid column names: {invalid_columns}')
 
+def where_sql(filter):
+  if not filter:
+    return ('', ())
+  columns = filter.keys()
+  def clause(column):
+    if filter[column]['op'] == 'contains':
+      return f'{column} like %s'
+    else:
+      return f'{column} = %s'
+  def sql_value(column):
+    value = filter[column]['value']
+    if filter[column]['op'] == 'contains':
+      return f'%{value}%'
+    else:
+      return value
+  clauses = [clause(column) for column in columns]
+  sql = 'WHERE ' + ' and '.join(clauses)
+  values = tuple([sql_value(column) for column in columns])
+  return (sql, values)
+
 def order_sql(sort):
   if not sort:
     return ''
@@ -57,8 +77,12 @@ id_json_schema = {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}
 def count(table_name):
   return query_one(f'select count(*) from {table_name}')['count']
 
-def find(table_name, limit=100, offset=0, sort=None):
-  return query(f'select * from {table_name} {order_sql(sort)} LIMIT %s OFFSET %s', (limit, offset))
+def find(table_name, limit=100, offset=0, sort=None, filter=None):
+  (where_clauses, where_values) = where_sql(filter)
+  values = where_values + (limit, offset)
+  sql = f'select * from {table_name} {where_clauses} {order_sql(sort)} LIMIT %s OFFSET %s'
+  print(f'find sql={sql} values={values}')
+  return query(sql, values)
 
 def find_one(table_name, id):
   return query_one(f'select * from {table_name} where id = %s', [id])

@@ -1,5 +1,6 @@
 from jsonschema import validate, ValidationError
 from util import get
+from dateutil.parser import parse as parse_date
 
 def validate_schema(instance, schema):
   try:
@@ -7,6 +8,27 @@ def validate_schema(instance, schema):
     return None
   except ValidationError as schema_error:
     return schema_error
+
+def coerce_value(value, value_schema):
+  value_type = get(value_schema, 'type')
+  if not value_type or value is None:
+    return value
+  try:
+    if value_type == 'integer' or (value_type == 'number' and '.' not in value):
+      return int(value)
+    elif value_type == 'number' and '.' in value:
+      return float(value)
+    elif value_type == 'boolean':
+      return value not in ['0', 'false', 'FALSE', 'f']
+    elif value_type == 'string' and get(value_schema, 'x-meta.format') == 'date-time':
+      return parse_date(value)
+    else:
+      return value
+  except:
+    return value
+
+def coerce_values(values, schema):
+  return {k: coerce_value(v, get(schema, f'properties.{k}')) for k, v in values.items()}
 
 def is_writable(property):
   return get(property, 'x-meta.writable') != False

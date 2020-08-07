@@ -15,8 +15,10 @@
 
 TODO:
 
-* List endpoint should support filter params
+* OpenAPI supports parameter default values
+* List endpoint should support filter param: add tests, docs, and lt/gt support
 * Unique constraint for mongodb
+* Add a change log
 
 Some alternatives for building an API like this in Python with popular frameworks:
 

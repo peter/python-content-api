@@ -1,37 +1,21 @@
-from json_schema import validate_schema, schema_error_response, writable_schema, writable_doc
+from json_schema import validate_schema, schema_error_response, writable_schema, writable_doc, coerce_values
 from util import get, invalid_response
 from functools import wraps
 
 def parameters_schema(parameters, source):
-  properties = {p['name']: p.get('schema') for p in parameters if p.get('schema')}
+  properties = {p['name']: p.get('schema') for p in parameters if p.get('schema') and not get(p, 'x-meta.namePattern')}
   if not properties:
     return None
+  pattern_properties = {get(p, 'x-meta.namePattern'): p.get('schema') for p in parameters if get(p, 'x-meta.namePattern')}
   required = [p['name'] for p in parameters if p.get('required') == True]
   additional_properties = True if source == 'header' else False
   return {
     'type': 'object',
     'properties': properties,
+    'patternProperties': pattern_properties,
     'required': required,
     'additionalProperties': additional_properties
   }
-
-def coerce_values(values, schema):
-  def coerce_value(value, value_schema):
-    value_type = get(value_schema, 'type')
-    if not value_type or value is None:
-      return value
-    try:
-      if value_type == 'integer' or (value_type == 'number' and '.' not in value):
-        return int(value)
-      elif value_type == 'number' and '.' in value:
-        return float(value)
-      elif value_type == 'boolean':
-        return value not in ['0', 'false', 'FALSE', 'f']
-      else:
-        return value
-    except:
-      return value
-  return {k: coerce_value(v, get(schema, f'properties.{k}')) for k, v in values.items()}
 
 def validate_parameters(route, request):
   if 'parameters' not in route:

@@ -12,8 +12,8 @@ json_schema = {
   'properties': {
       'id': db.id_json_schema,
       'url': {'type': 'string', 'format': 'uri', 'pattern': '^https?://.+$'},
-      'created_at': {'type': 'string', 'x-meta': {'writable': False}},
-      'updated_at': {'type': 'string', 'x-meta': {'writable': False}}
+      'created_at': {'type': 'string', 'format': 'date-time', 'x-meta': {'writable': False}},
+      'updated_at': {'type': 'string', 'format': 'date-time', 'x-meta': {'writable': False}}
   },
   'required': ['id', 'url', 'created_at'],
   'additionalProperties': False

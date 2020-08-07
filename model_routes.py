@@ -1,4 +1,5 @@
 from db import db
+from model_api import filter_param_pattern
 
 id_parameter = {
     'name': 'id',
@@ -7,27 +8,38 @@ id_parameter = {
     'schema': db.id_json_schema
 }
 
-list_parameters = [
-    {
-        'name': 'limit',
-        'in': 'query',
-        'required': False,
-        'schema': {'type': 'integer', 'minimum': 1, 'maximum': 100}
-    },
-    {
-        'name': 'offset',
-        'in': 'query',
-        'required': False,
-        'schema': {'type': 'integer', 'minimum': 0}
-    },
-    {
-        'name': 'sort',
-        'in': 'query',
-        'required': False,
-        'schema': {'type': 'string'},
-        'description': 'Sort order on the format column1,column2,column3... For descending sort, use -column1'
-    }
-]
+def list_parameters(json_schema):
+    return [
+        {
+            'name': 'limit',
+            'in': 'query',
+            'required': False,
+            'schema': {'type': 'integer', 'minimum': 1, 'maximum': 100}
+        },
+        {
+            'name': 'offset',
+            'in': 'query',
+            'required': False,
+            'schema': {'type': 'integer', 'minimum': 0}
+        },
+        {
+            'name': 'sort',
+            'in': 'query',
+            'required': False,
+            'schema': {'type': 'string'},
+            'description': 'Sort order on the format column1,column2,column3... For descending sort, use -column1'
+        },
+        {
+            'name': 'filter',
+            'in': 'query',
+            'required': False,
+            'x-meta': {
+                'namePattern': filter_param_pattern(json_schema)
+            },
+            'schema': {'type': 'string'},
+            'description': 'Filters to query by, i.e. filter.column=foobar or filter.column[contains]=foobar'
+        }
+    ]
 
 default_route_names = ['list', 'get', 'create', 'update', 'delete']
 
@@ -41,7 +53,7 @@ def get_model_routes(name, json_schema, api, route_names = default_route_names):
             'name': 'list',
             'handler': api.list,
             'model_name': name,
-            'parameters': list_parameters,
+            'parameters': list_parameters(json_schema),
             'response_schema': api.response_schema('list')
         },
         {

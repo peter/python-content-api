@@ -1,7 +1,7 @@
 from db import db
 import re
 from datetime import datetime
-from json_schema import validate_schema, schema_error_response
+from json_schema import validate_schema, schema_error_response, coerce_value
 from types import SimpleNamespace
 import util
 from util import exception_response, invalid_response, remove_none
@@ -19,6 +19,24 @@ def is_valid_sort(json_schema, sort):
     if not name in json_schema['properties'].keys():
       return False
   return True
+
+def filter_param_pattern(json_schema):
+  property_names = json_schema['properties'].keys()
+  return f'^filter\\.({"|".join(property_names)})(?:\\[(contains)\\])?$'
+
+def parse_filter(json_schema, query):
+  pattern = re.compile(filter_param_pattern(json_schema))
+  result = {}
+  for k, v in query.items():
+    match = re.match(pattern, k)
+    if match:
+      (name, op) = match.groups()
+      value_schema = util.get(json_schema, f'properties.{name}')
+      result[name] = {
+        'value': coerce_value(v, value_schema),
+        'op': (op or 'eq')
+      }
+  return result
 
 def make_model_api(table_name, json_schema,
   list_decorator=empty_decorator,
@@ -39,7 +57,8 @@ def make_model_api(table_name, json_schema,
           'count': {'type': 'integer'},
           'limit': {'type': 'integer'},
           'offset': {'type': 'integer'},
-          'sort': {'type': 'string'}
+          'sort': {'type': 'string'},
+          'filter': {'type': 'object'}
         },
         'additionalProperties': False,
         'required': ['data', 'count', 'limit', 'offset']
@@ -54,9 +73,17 @@ def make_model_api(table_name, json_schema,
       sort = util.get(request, 'query.sort') or '-updated_at'
       if not is_valid_sort(json_schema, sort):
         return invalid_response('Invalid sort parameter, must be on the format column1,column2,column3... For descending sort, use -column1')
+      filter = parse_filter(json_schema, request.get('query', {}))
       count = db.count(table_name)
-      docs = [remove_none(doc) for doc in db.find(table_name, limit, offset, sort)]
-      body = {'count': count, 'limit': limit, 'offset': offset, 'sort': sort, 'data': docs}
+      docs = [remove_none(doc) for doc in db.find(table_name, limit, offset, sort, filter)]
+      body = {
+        'count': count,
+        'limit': limit,
+        'offset': offset,
+        'sort': sort,
+        'filter': filter,
+        'data': docs
+      }
       return {'body': body}
 
   @get_decorator

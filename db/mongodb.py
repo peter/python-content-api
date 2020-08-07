@@ -22,6 +22,14 @@ def parse_sort(sort):
     return (name, direction)
   return [parse_item(item) for item in sort.split(',')]
 
+def parse_filter(filter):
+  if not filter:
+    return None
+  def filter_value(v):
+    op = 'regex' if v['op'] == 'contains' else 'eq'
+    return {f'${op}': v['value']}
+  return {k: filter_value(v) for k, v in filter.items()}
+
 #############################################################
 #
 # Database Interface
@@ -33,8 +41,9 @@ id_json_schema = {'type': 'string', 'pattern': '^[a-z0-9]{24}$', 'x-meta': {'wri
 def count(collection):
   return db[collection].count_documents({})
 
-def find(collection, limit=100, offset=0, sort=None):
-  return [with_id_str(doc) for doc in list(db[collection].find(limit=limit, skip=offset, sort=parse_sort(sort)))]
+def find(collection, limit=100, offset=0, sort=None, filter=None):
+  print(f'find filter={parse_filter(filter)}')
+  return [with_id_str(doc) for doc in list(db[collection].find(limit=limit, skip=offset, sort=parse_sort(sort), filter=parse_filter(filter)))]
 
 def find_one(collection, id):
   return with_id_str(db[collection].find_one({'_id': ObjectId(id)}))
