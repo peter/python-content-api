@@ -15,10 +15,9 @@
 
 TODO:
 
-* OpenAPI supports parameter default values
-* List endpoint should support filter param: add tests, docs, and lt/gt support
 * Unique constraint for mongodb
 * Add a change log
+* Use OpenAPI support for parameter default values
 
 Some alternatives for building an API like this in Python with popular frameworks:
 
@@ -147,7 +146,7 @@ DATABASE=mongodb bin/test
 The API tests can be run against the Heroku demo app as well:
 
 ```sh
-BASE_URL=https://python-heroku-rest-api.herokuapp.com pytest -s -vv app_test.py
+BASE_URL=https://python-heroku-rest-api.herokuapp.com pytest -s -vv content_api/app_test.py
 ```
 
 ## API Documentation (OpenAPI/Swagger)
