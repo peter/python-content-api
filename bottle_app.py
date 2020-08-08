@@ -2,8 +2,8 @@ from bottle import Bottle, run, request, response, static_file, redirect, HTTPRe
 import os
 import json
 from datetime import date
-from swagger import generate_swagger
-from models import all_model_routes
+from content_api.swagger import generate_swagger
+from content_api.models import all_model_routes
 
 app = Bottle()
 

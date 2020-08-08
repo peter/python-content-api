@@ -1,4 +1,4 @@
-from util import get
+from content_api.util import get
 
 # See: https://stackoverflow.com/questions/4014621/a-python-class-that-acts-like-dict
 class DictLike:

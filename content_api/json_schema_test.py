@@ -1,4 +1,4 @@
-from json_schema import writable_schema, writable_doc
+from content_api.json_schema import writable_schema, writable_doc
 
 def test_writable_schema():
   schema = {

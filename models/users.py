@@ -1,4 +1,4 @@
-from db import db
+from content_api.db import db
 
 json_schema = {
   'type': 'object',

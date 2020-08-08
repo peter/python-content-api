@@ -3,9 +3,9 @@ import json
 import requests
 import uuid
 import re
-from util import get, omit
-from json_schema import validate_schema
-from db import DATABASE
+from content_api.util import get, omit
+from content_api.json_schema import validate_schema
+from content_api.db import DATABASE
 from dateutil.parser import parse as parse_date
 import urllib.parse
 
@@ -13,7 +13,7 @@ BASE_URL = os.getenv('BASE_URL', 'http://localhost:5001')
 
 list_url = f'{BASE_URL}/v1/urls'
 
-with open('./swagger_meta_schema.json') as f:
+with open('./content_api/swagger_meta_schema.json') as f:
     swagger_meta_schema = json.loads(f.read())
 
 def uuid_hex():

@@ -1,5 +1,5 @@
-from db import db
-from model_api import filter_param_pattern
+from content_api.db import db
+from content_api.model_api import filter_param_pattern
 
 id_parameter = {
     'name': 'id',

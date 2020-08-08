@@ -1,4 +1,4 @@
-from util import with_decorators
+from content_api.util import with_decorators
 from functools import wraps
 import time
 

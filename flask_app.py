@@ -2,9 +2,9 @@ import os
 import json
 from datetime import date
 from flask import Flask, jsonify, make_response, request, redirect, send_from_directory
-from util import exception_body
-from swagger import generate_swagger
-from models import all_model_routes
+from content_api.util import exception_body
+from content_api.swagger import generate_swagger
+from content_api.models import all_model_routes
 
 app = Flask(__name__)
 

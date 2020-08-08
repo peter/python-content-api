@@ -6,8 +6,8 @@ import tornado.ioloop
 import tornado.web
 from tornado.web import Application, RequestHandler
 from tornado.log import enable_pretty_logging
-from swagger import generate_swagger
-from models import all_model_routes
+from content_api.swagger import generate_swagger
+from content_api.models import all_model_routes
 
 class JsonEncoder(json.JSONEncoder):
 	def default(self, obj):

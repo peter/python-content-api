@@ -1,4 +1,4 @@
-from util import named_args
+from content_api.util import named_args
 
 ARTICLES = [
   {

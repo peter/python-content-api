@@ -1,7 +1,7 @@
 import os
 import pymongo
 from bson.objectid import ObjectId
-from util import remove_none
+from content_api.util import remove_none
 
 DATABASE_URL = os.environ.get('MONGODB_URI', os.environ.get('DATABASE_URL', 'mongodb://localhost:27017/python-rest-api'))
 DATABASE_URL += '?retryWrites=false' # This seems to be needed for mlab on Heroku

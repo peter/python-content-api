@@ -1,9 +1,9 @@
 import sys
 import requests
-from util import invalid_response
-from model_api import make_model_api_with_validation
-from model_routes import get_model_routes
-from db import db
+from content_api.util import invalid_response
+from content_api.model_api import make_model_api_with_validation
+from content_api.model_routes import get_model_routes
+from content_api.db import db
 
 name = 'urls'
 

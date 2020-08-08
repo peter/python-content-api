@@ -1,5 +1,5 @@
 from jsonschema import validate, ValidationError
-from util import get
+from content_api.util import get
 from dateutil.parser import parse as parse_date
 
 def validate_schema(instance, schema):

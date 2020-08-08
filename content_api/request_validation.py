@@ -1,5 +1,5 @@
-from json_schema import validate_schema, schema_error_response, writable_schema, writable_doc, coerce_values
-from util import get, invalid_response
+from content_api.json_schema import validate_schema, schema_error_response, writable_schema, writable_doc, coerce_values
+from content_api.util import get, invalid_response
 from functools import wraps
 
 def parameters_schema(parameters, source):

@@ -2,14 +2,14 @@
 
 ## Features
 
-* A micro framework for content APIs with minimal codebase - less than 1000 lines of Python (see [bin/loc](bin/loc))
-* Postgresql access with psycopg2 (see [db/pg.py](db/pg.py))
-* MongoDB access with pymongo (see [db/mongodb.py](db/mongodb.py))
-* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](model_api.py) and [models/__init__.py](models/__init__.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
-* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](model_routes.py)). There is also support for Bottle in [bottle_app.py](bottle_app.py) and Tornado in [tornado_app.py](tornado_app.py). With both Bottle and Tornado I had issues with internal URLs, i.e. where the server would make requests back to itself. Once I changed [app_test.py](app_test.py) to use external URLs this was resolved.
-* Validation with jsonschema (see the `validate_schema` function in [json_schema.py](json_schema.py) and its usages in [request_validation.py](request_validation.py), and [app_test.py](app_test.py))
-* API testing with pytest and the request package (see [app_test.py](app_test.py))
-* OpenAPI/Swagger documentation generated from model routes (see [swagger.py](swagger.py))
+* A micro framework for content APIs with minimal codebase - less than 1000 lines of Python (see the [content_api](content_api) directory and [bin/loc](bin/loc))
+* Postgresql access with psycopg2 (see [db/pg.py](content_api/db/pg.py))
+* MongoDB access with pymongo (see [db/mongodb.py](content_api/db/mongodb.py))
+* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](content_api/model_api.py) and [models.py](content_api/models.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
+* Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](content_api/model_routes.py)). There is also support for Bottle in [bottle_app.py](bottle_app.py) and Tornado in [tornado_app.py](tornado_app.py). With both Bottle and Tornado I had issues with internal URLs, i.e. where the server would make requests back to itself. Once I changed [app_test.py](content_api/app_test.py) to use external URLs this was resolved.
+* Validation with jsonschema (see the `validate_schema` function in [json_schema.py](content_api/json_schema.py) and its usages in [request_validation.py](content_api/request_validation.py), and [app_test.py](content_api/app_test.py))
+* API testing with pytest and the request package (see [app_test.py](content_api/app_test.py))
+* OpenAPI/Swagger documentation generated from model routes (see [swagger.py](content_api/swagger.py))
 * Deployment to Heroku
 * Deployment with Zappa to AWS Lambda
 
@@ -32,7 +32,7 @@ Some alternatives for building an API like this in Python with popular framework
 ## Models, Routes, and Handlers
 
 * If a model doesn't specify a `routes` attribute then it will get the five default CRUD routes (`list`, `get`, `create`, `update`, `delete`) based on the models `json_schema` and `db_schema` attributes (those need to be present). For examples see [models/fetches.py](models/fetches.py). If you only want to expose a subset of the CRUD routes for a model you can set the `route_names` attribute, see [models/users.py](models/users.py)
-* By specifying the `routes` property for a model you can customize the default CRUD routes, for example to add custom validation, see [models/urls.py](models/urls.py). You are also free to set any types of routes that you need for the model and the `json_schema` and `db_schema` properties are not required in this case. You may for example have a model that uses a different database or no database at all, see [models/articles.py](models/articles.py). The `routes` property needs to be a list of dictionaries with the keys `method`, `path`, `handler`, and the optional keys `name` (name of the route, defaults to the name of handler function), `request_schema` (JSON schema to validate in request body), `response_schema` (JSON schema of response body), and `parameters` (a list of [OpenAPI parameters](https://swagger.io/docs/specification/describing-parameters/) to validate in path/query/header - see [models/articles.py](models/articles.py)). The default CRUD routes are defined in [model_routes.py](model_routes.py).
+* By specifying the `routes` property for a model you can customize the default CRUD routes, for example to add custom validation, see [models/urls.py](models/urls.py). You are also free to set any types of routes that you need for the model and the `json_schema` and `db_schema` properties are not required in this case. You may for example have a model that uses a different database or no database at all, see [models/articles.py](models/articles.py). The `routes` property needs to be a list of dictionaries with the keys `method`, `path`, `handler`, and the optional keys `name` (name of the route, defaults to the name of handler function), `request_schema` (JSON schema to validate in request body), `response_schema` (JSON schema of response body), and `parameters` (a list of [OpenAPI parameters](https://swagger.io/docs/specification/describing-parameters/) to validate in path/query/header - see [models/articles.py](models/articles.py)). The default CRUD routes are defined in [model_routes.py](content_api/model_routes.py).
 
 A route `handler` will receive a single argument `request` dict with these attributes:
 
@@ -53,8 +53,8 @@ A route `handler` returns a `response` dict with these attributes:
 
 What's usually referred to as `middleware` in web frameworks can be achieved
 by adding [Python decorators](https://www.programiz.com/python-programming/decorator) to
-a route `handler`, see for example how this is done in [model_api.py](model_api.py) and
-in [models/__init__.py](models/__init__.py) or in this simple example model (notice that the order of decorators potentially matters):
+a route `handler`, see for example how this is done in [model_api.py](content_api/model_api.py) and
+in [content_api/models.py](content_api/models.py) or in this simple example model (notice that the order of decorators potentially matters):
 
 ```python
 from functools import wraps
@@ -229,7 +229,7 @@ From python:
 
 ```sh
 python
-import db.pg as db
+import content_api.db.pg as db
 from datetime import datetime
 
 # create
@@ -260,7 +260,7 @@ delete from urls;
 
 ```sh
 python
-import db.mongodb as db
+import content_api.db.mongodb as db
 from datetime import datetime
 
 # create

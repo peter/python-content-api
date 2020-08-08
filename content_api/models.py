@@ -1,10 +1,10 @@
 import sys
 import os
 import importlib
-import db
-from model_api import make_model_api
-from model_routes import get_model_routes, default_route_names
-from request_validation import decorate_handler_with_validation
+import content_api.db as db
+from content_api.model_api import make_model_api
+from content_api.model_routes import get_model_routes, default_route_names
+from content_api.request_validation import decorate_handler_with_validation
 
 ORDERED_MODEL_NAMES = [
   'urls',
