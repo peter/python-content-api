@@ -48,6 +48,8 @@ A route `handler` returns a `response` dict with these attributes:
 * `status` (optional) - HTTP status code (defaults to 200)
 * `headers` (optional) - a dict with HTTP response headers
 
+Models are read in alphabetical filename order and the [urls](models/00_urls.py) model has a PostgreSQL table with a reference to the [fetches](models/01_fetches.py) table which is why the model files have number prefixes in the filename.
+
 ## Decorators
 
 What's usually referred to as `middleware` in web frameworks can be achieved
