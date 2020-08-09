@@ -50,6 +50,18 @@ A route `handler` returns a `response` dict with these attributes:
 
 Models are read in alphabetical filename order and the [urls](models/00_urls.py) model has a PostgreSQL table with a reference to the [fetches](models/01_fetches.py) table which is why the model files have number prefixes in the filename.
 
+Here is a short description of the most important modules in the [content_api](content_api) directory:
+
+* [model_routes](content_api/model_routes.py) - if a model doesn't define a `routes` attribute then the CRUD routes in `model_routes` is used. Model routes are at the heart of the content API since they define the routing for the web framework (i.e. Flask), are used to generate the OpenAPI documentation, and are used as the basis for request validation (with JSON schema).
+* [model_api](content_api/model_api.py) - has the default CRUD handlers used by `model_routes` and talks to a database module like [db/pg](content_api/db/pg.py).
+* [models](content_api/models.py) - reads all the models in the `models` directory and sets some defaults for those models. Also has a `create_schema` function for creating the PostgreSQL schema (tables) for all models.
+* [request_validation](content_api/request_validation.py)
+* [swagger](content_api/swagger.py) - creates the OpenAPI `sagger.json` specification based on the `model_routes`.
+* [json_schema](content_api/json_schema.py) - handles JSON schema validation and type coercion based on JSON schema types. Type coercion is needed since query, path, and header parameters come in as strings and for the request body since JSON doesn't have a datetime type
+* [app_test](content_api/app_test.py) - end-to-end HTTP level testing of the model API, primarily for the CRUD operations of the `urls` example model, validation, sorting, filtering, pagination etc.
+* [db/pg](content_api/db/pg.py) - the PostgreSQL database interface
+* [db/mongodb](content_api/db/mongodb.py) - the MongoDB database interface
+
 ## Decorators
 
 What's usually referred to as `middleware` in web frameworks can be achieved
