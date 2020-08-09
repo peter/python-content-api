@@ -5,7 +5,7 @@
 * A microframework for content APIs with minimal codebase - less than 1000 lines of Python (see the [content_api](content_api) directory and [bin/loc](bin/loc))
 * Postgresql access with psycopg2 (see [db/pg.py](content_api/db/pg.py))
 * MongoDB access with pymongo (see [db/mongodb.py](content_api/db/mongodb.py))
-* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](content_api/model_api.py) and [models.py](content_api/models.py) and example models like [models/00_urls.py](models/00_urls.py) and [models/users.py](models/users.py))
+* Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](content_api/model_api.py) and [models.py](content_api/models.py) and example models like [urls](models/00_urls.py) and [users](models/users.py))
 * Flask CRUD API (a thin wrapper around the model API, see [flask_app.py](flask_app.py) and [model_routes.py](content_api/model_routes.py)). There is also support for Bottle in [bottle_app.py](bottle_app.py) and Tornado in [tornado_app.py](tornado_app.py). With both Bottle and Tornado I had issues with internal URLs, i.e. where the server would make requests back to itself. Once I changed [app_test.py](content_api/app_test.py) to use external URLs this was resolved.
 * Validation with jsonschema (see the `validate_schema` function in [json_schema.py](content_api/json_schema.py) and its usages in [request_validation.py](content_api/request_validation.py), and [app_test.py](content_api/app_test.py))
 * API testing with pytest and the request package (see [app_test.py](content_api/app_test.py))
