@@ -62,6 +62,10 @@ Here is a short description of the most important modules in the [content_api](c
 * [db/pg](content_api/db/pg.py) - the PostgreSQL database interface
 * [db/mongodb](content_api/db/mongodb.py) - the MongoDB database interface
 
+## OpenAPI and JSON Schema
+
+Something to be aware of is that unfortunately OpenAPI [does not](https://swagger.io/docs/specification/data-models/keywords/) have full [JSON Schema](http://json-schema.org/understanding-json-schema/) support. Examples of unsupported features are `patternProperties` and `type` properties with array (multiple) values, i.e. specifying that a value can be either a `string` or a `number` etc. To work around those limitations, and also, to add additional capabilities to your schemas you can use [OpenAPI extension properties](https://swagger.io/docs/specification/openapi-extensions/#:~:text=Extensions%20(also%20referred%20to%20as,by%20the%20standard%20OpenAPI%20Specification.). What I like to do is collect all my extensions under a single `x-meta` property and put all the metadata that I need there.
+
 ## Decorators
 
 What's usually referred to as `middleware` in web frameworks can be achieved
@@ -452,6 +456,7 @@ BASE_URL=https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production pyth
 
 ## Resources
 
+* [Understanding JSON Schema](http://json-schema.org/understanding-json-schema/)
 * [Installing Postgres via Brew on Mac](https://gist.github.com/ibraheem4/ce5ccd3e4d7a65589ce84f2a3b7c23a3)
 * [Python Flask/Auth/Heroku Example app](https://github.com/peter/api-auth-examples/tree/master/flask)
 * [Getting Started on Heroku with Python](https://devcenter.heroku.com/articles/getting-started-with-python?singlepage=true)
