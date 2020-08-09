@@ -1,15 +1,11 @@
 import sys
 import os
+import traceback
 import importlib
-import content_api.db as db
+from content_api.db import db
 from content_api.model_api import make_model_api
 from content_api.model_routes import get_model_routes, default_route_names
 from content_api.request_validation import decorate_handler_with_validation
-
-ORDERED_MODEL_NAMES = [
-  'urls',
-  'fetches'
-]
 
 def set_route_defaults(route, name):
   return {
@@ -37,13 +33,9 @@ def all_models():
     name, ext = os.path.splitext(filename)
     if filename != os.path.basename(__file__) and ext == '.py':
       return name
-  def is_unordered_model(filename):
-    name = model_name(filename)
-    return name and name not in ORDERED_MODEL_NAMES
-  def get_unordered_names():
-    return [model_name(f) for f in os.listdir('models') if is_unordered_model(f)]
+  model_names = sorted([model_name(f) for f in os.listdir('models') if model_name(f)])
   models = []
-  for name in (ORDERED_MODEL_NAMES + get_unordered_names()):
+  for name in model_names:
     model = set_model_defaults(name, importlib.import_module(f'models.{name}'))
     models.append(model)
   return models
@@ -57,7 +49,8 @@ def create_schema():
       db.conn.cursor().execute(model.db_schema)
     except:
       error = sys.exc_info()[0]
-      print(f'Could not create schema for model {model.name}: {error}')
+      print(f'Could not create schema for model {model.name}', error)
+      traceback.print_exc()
 
 def migrate_schema():
   # TODO: create db_migrations table if not exists

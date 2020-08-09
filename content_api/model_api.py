@@ -1,8 +1,8 @@
-from .db import db
 import re
 from datetime import datetime
 from content_api.json_schema import validate_schema, schema_error_response, coerce_value, writable_doc
 from types import SimpleNamespace
+from content_api.db import db
 import content_api.util as util
 from content_api.util import exception_response, invalid_response, remove_none
 from psycopg2.errors import UniqueViolation, ForeignKeyViolation

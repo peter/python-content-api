@@ -111,7 +111,7 @@ Create database:
 
 ```sh
 createdb -U postgres python-rest-api
-python -c "import models; models.create_schema()"
+python -c "import content_api.models as models; models.create_schema()"
 ```
 
 Start a Flask server:
