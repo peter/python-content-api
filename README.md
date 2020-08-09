@@ -2,7 +2,7 @@
 
 ## Features
 
-* A micro framework for content APIs with minimal codebase - less than 1000 lines of Python (see the [content_api](content_api) directory and [bin/loc](bin/loc))
+* A microframework for content APIs with minimal codebase - less than 1000 lines of Python (see the [content_api](content_api) directory and [bin/loc](bin/loc))
 * Postgresql access with psycopg2 (see [db/pg.py](content_api/db/pg.py))
 * MongoDB access with pymongo (see [db/mongodb.py](content_api/db/mongodb.py))
 * Generic CRUD model API that is easy to adapt to Flask or serverless etc. (see [model_api.py](content_api/model_api.py) and [models.py](content_api/models.py) and example models like [models/urls.py](models/urls.py) and [models/users.py](models/users.py))
