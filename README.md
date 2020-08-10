@@ -64,7 +64,7 @@ Here is a short description of the most important modules in the [content_api](c
 
 ## OpenAPI and JSON Schema
 
-Something to be aware of is that unfortunately OpenAPI [does not](https://swagger.io/docs/specification/data-models/keywords/) have full [JSON Schema](http://json-schema.org/understanding-json-schema/) support. Examples of unsupported features are `patternProperties` and `type` properties with array (multiple) values, i.e. specifying that a value can be either a `string` or a `number` etc. To work around those limitations, and also, to add additional capabilities to your schemas you can use [OpenAPI extension properties](https://swagger.io/docs/specification/openapi-extensions/#:~:text=Extensions%20(also%20referred%20to%20as,by%20the%20standard%20OpenAPI%20Specification.). What I like to do is collect all my extensions under a single `x-meta` property and put all the metadata that I need there.
+Something to be aware of is that unfortunately OpenAPI [does not](https://swagger.io/docs/specification/data-models/keywords/) have full [JSON Schema](http://json-schema.org/understanding-json-schema/) support. Examples of unsupported features are `patternProperties` and `type` properties with array (multiple) values, i.e. specifying that a value can be either a `string` or a `number` etc. To work around those limitations, and also, to add additional capabilities to your schemas you can use [OpenAPI extension properties](https://swagger.io/docs/specification/openapi-extensions). What I usually do is collect all my extensions under a single `x-meta` property and put the metadata that I need there.
 
 ## Decorators
 
