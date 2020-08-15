@@ -2,6 +2,7 @@ import psycopg2
 import psycopg2.extras
 import os
 import re
+from content_api.util import remove_none, get
 
 DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://postgres:@localhost/python-rest-api')
 conn = psycopg2.connect(DATABASE_URL)
@@ -77,6 +78,37 @@ def order_sql(sort):
 #############################################################
 
 id_json_schema = {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}}
+
+def generate_db_schema(name, json_schema):
+  statements = []
+  def get_datatype(column_name, schema):
+    if column_name == 'id' and schema['type'] == 'integer':
+      return 'serial PRIMARY KEY'
+    elif schema['type'] == 'integer':
+      return 'integer'
+    elif schema['type'] == 'string' and schema['format'] == 'date-time':
+      return 'timestamp'
+    elif schema['type'] == 'string':
+      return 'varchar'
+  def is_not_null(column_name, datatype):
+    return column_name in json_schema.get('required', []) and 'PRIMARY KEY' not in datatype
+  def is_unique(datatype, schema):
+    return get(schema, 'x-meta.unique') and 'PRIMARY KEY' not in datatype
+  for column_name, schema in json_schema['properties'].items():
+    datatype = get_datatype(column_name, schema)
+    statement = [
+      column_name,
+      datatype,
+      'UNIQUE' if is_unique(datatype, schema) else None,
+      'NOT NULL' if is_not_null(column_name, datatype) else None
+    ]
+    statements.append(' '.join(remove_none(statement)))
+  statements_sql = ",\n".join(statements)
+  return f'''
+    CREATE TABLE {name} (
+      {statements_sql}
+    )
+  '''
 
 def count(table_name):
   return query_one(f'select count(*) from {table_name}')['count']

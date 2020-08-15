@@ -38,6 +38,9 @@ def parse_filter(filter):
 
 id_json_schema = {'type': 'string', 'pattern': '^[a-z0-9]{24}$', 'x-meta': {'writable': False}}
 
+def generate_db_schema(name, json_schema):
+  return None
+
 def count(collection):
   return db[collection].count_documents({})
 

@@ -64,5 +64,8 @@ def omit(d, keys):
 def pick(d, keys):
      return {k: d[k] for k in d if k in keys}
 
-def remove_none(doc):
-  return {k: v for k, v in doc.items() if v is not None}
+def remove_none(data):
+  if type(data) == list:
+      return [v for v in data if v is not None]
+  else:
+    return {k: v for k, v in data.items() if v is not None}
