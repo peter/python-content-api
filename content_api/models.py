@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 import traceback
 import importlib
 from content_api.db import db
@@ -16,9 +17,9 @@ def set_route_defaults(route, name):
     'handler': decorate_handler_with_validation(route)
   }
 
-def set_model_defaults(name, model):
+def set_model_defaults(default_name, model):
   if not 'name' in dir(model):
-    setattr(model, 'name', name)
+    setattr(model, 'name', default_name)
   if 'routes' not in dir(model):
     if not ('db_schema' in dir(model) and 'json_schema' in dir(model)):
       raise Exception(f'You need to specify db_schema and json_schema for model {name}')
@@ -28,15 +29,21 @@ def set_model_defaults(name, model):
   setattr(model, 'routes', [set_route_defaults(route, model.name) for route in model.routes])
   return model
 
+def module_name(filename):
+  name, ext = os.path.splitext(filename)
+  if ext != '.py':
+    return None
+  return name
+
+def default_model_name(module_name):
+  (_, name_without_prefix) = re.match("^([0-9_-]+)?(.+)$", module_name).groups()
+  return name_without_prefix
+
 def all_models():
-  def model_name(filename):
-    name, ext = os.path.splitext(filename)
-    if filename != os.path.basename(__file__) and ext == '.py':
-      return name
-  model_names = sorted([model_name(f) for f in os.listdir('models') if model_name(f)])
+  module_names = sorted([module_name(f) for f in os.listdir('models') if module_name(f)])
   models = []
-  for name in model_names:
-    model = set_model_defaults(name, importlib.import_module(f'models.{name}'))
+  for name in module_names:
+    model = set_model_defaults(default_model_name(name), importlib.import_module(f'models.{name}'))
     models.append(model)
   return models
 
