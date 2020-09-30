@@ -204,6 +204,7 @@ def test_list_query_params():
     response = requests.get(f'{list_url}?filter.url={doc1["url"]}')
     assert len(response.json()['data']) == 1
     assert response.json()['data'][0]['url'] == doc1['url']
+    assert response.json()['count'] == 1
 
     # Filter - contains
     (uuid1,) = re.search('uuid=(.+)', doc1['url']).groups()
