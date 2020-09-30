@@ -22,10 +22,10 @@ def set_model_defaults(name, model):
   if 'routes' not in dir(model):
     if not ('db_schema' in dir(model) and 'json_schema' in dir(model)):
       raise Exception(f'You need to specify db_schema and json_schema for model {name}')
-    setattr(model, 'api', make_model_api(name, model.json_schema))
+    setattr(model, 'api', make_model_api(model.name, model.json_schema))
     route_names = model.route_names if 'route_names' in dir(model) else default_route_names
-    setattr(model, 'routes', get_model_routes(name, model.json_schema, model.api, route_names=route_names))
-  setattr(model, 'routes', [set_route_defaults(route, name) for route in model.routes])
+    setattr(model, 'routes', get_model_routes(model.name, model.json_schema, model.api, route_names=route_names))
+  setattr(model, 'routes', [set_route_defaults(route, model.name) for route in model.routes])
   return model
 
 def all_models():

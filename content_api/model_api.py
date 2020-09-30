@@ -73,7 +73,7 @@ def make_model_api(table_name, json_schema,
       if not is_valid_sort(json_schema, sort):
         return invalid_response('Invalid sort parameter, must be on the format column1,column2,column3... For descending sort, use -column1')
       filter = parse_filter(json_schema, request.get('query', {}))
-      count = db.count(table_name)
+      count = db.count(table_name, filter)
       docs = [remove_none(doc) for doc in db.find(table_name, limit, offset, sort, filter)]
       body = {
         'count': count,

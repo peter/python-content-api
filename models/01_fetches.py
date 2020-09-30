@@ -1,5 +1,7 @@
 from content_api.db import db
 
+name = 'fetches'
+
 json_schema = {
   'type': 'object',
   'properties': {

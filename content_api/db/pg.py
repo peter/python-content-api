@@ -78,8 +78,9 @@ def order_sql(sort):
 
 id_json_schema = {'type': 'integer', 'minimum': 1, 'x-meta': {'writable': False}}
 
-def count(table_name):
-  return query_one(f'select count(*) from {table_name}')['count']
+def count(table_name, filter=None):
+  (where_clauses, where_values) = where_sql(filter)
+  return query_one(f'select count(*) from {table_name} {where_clauses}', where_values)['count']
 
 def find(table_name, limit=100, offset=0, sort=None, filter=None):
   (where_clauses, where_values) = where_sql(filter)

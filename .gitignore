@@ -1,3 +1,5 @@
 venv
 __pycache__
 .vscode
+*.pyc
+content_api/*.pyc

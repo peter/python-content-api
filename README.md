@@ -128,6 +128,7 @@ pip install -r requirements.txt
 Create database:
 
 ```sh
+createuser -s postgres # fixes role "postgres" does not exist
 createdb -U postgres python-rest-api
 python -c "import content_api.models as models; models.create_schema()"
 ```
@@ -208,7 +209,6 @@ curl -i "$BASE_URL/v1/urls?sort=created_at"
 curl -gi "$BASE_URL/v1/urls?filter.url=http://www.yahoo.com"
 curl -gi "$BASE_URL/v1/urls?filter.url[contains]=652cd7805f3e4182960e7e8a0863e807"
 curl -gi "$BASE_URL/v1/urls?filter.created_at[lt]=2020-08-06%2009:31:28.092946"
-
 
 # get of non-existant id yields 404
 curl -i $BASE_URL/v1/urls/12345

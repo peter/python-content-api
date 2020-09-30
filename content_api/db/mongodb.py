@@ -24,7 +24,7 @@ def parse_sort(sort):
 
 def parse_filter(filter):
   if not filter:
-    return None
+    return {}
   def filter_value(v):
     op = 'regex' if v['op'] == 'contains' else v['op']
     return {f'${op}': v['value']}
@@ -38,8 +38,9 @@ def parse_filter(filter):
 
 id_json_schema = {'type': 'string', 'pattern': '^[a-z0-9]{24}$', 'x-meta': {'writable': False}}
 
-def count(collection):
-  return db[collection].count_documents({})
+def count(collection, filter={}):
+  print(f'count filter={parse_filter(filter)}')
+  return db[collection].count_documents(parse_filter(filter))
 
 def find(collection, limit=100, offset=0, sort=None, filter=None):
   print(f'find filter={parse_filter(filter)}')
