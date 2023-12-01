@@ -11,7 +11,6 @@
 * API testing with pytest and the request package (see [app_test.py](content_api/app_test.py))
 * OpenAPI/Swagger documentation generated from model routes (see [swagger.py](content_api/swagger.py))
 * Deployment to Heroku
-* Deployment with Zappa to AWS Lambda
 
 TODO:
 
@@ -378,80 +377,10 @@ Test the app:
 heroku open
 ```
 
-## Deployment with Zappa to AWS Lambda
-
-Make sure you have an AWS account and set up a user with programmatic access in the AWS console. Add the keys to `~/.aws/credentials`:
-
-```
-[default]
-aws_access_key_id = ...
-aws_secret_access_key = ...
-```
-
-Install Zappa:
-
-```sh
-pip install zappa
-pip freeze > requirements.txt
-```
-
-[Recreate the virtual env](https://github.com/Miserlou/Zappa/issues/1232):
-
-```sh
-deactivate
-rm -rf ./venv
-python -m venv venv
-. venv/bin/activate
-pip install -r requirements.txt
-```
-
-```sh
-zappa init
-```
-
-The `zappa init` command will create a `zappa_settings.json` file like the following (where I think I needed to add the `aws_region` manually):
-
-```json
-{
-    "production": {
-        "app_function": "app.app",
-        "profile_name": "private",
-        "aws_region": "eu-north-1",
-        "project_name": "python-rest-api",
-        "runtime": "python3.8",
-        "s3_bucket": "zappa-python-rest-api"
-    }
-}
-```
-
-Deploy:
-
-```sh
-zappa deploy production
-```
-
-Zappa error: [Status check on the deployed lambda failed](https://github.com/Miserlou/Zappa/issues/1985), see also [Error loading psycopg2 module](https://github.com/Miserlou/Zappa/issues/800). *NOTE: in order to get Zappa deployment to work I needed to replace the `psycopg2` package with [psycopg2-binary](https://pypi.org/project/psycopg2-binary) and "the binary package is a practical choice for development and testing but in production it is advised to use the package built from sources"*.
-
-Zappa debug logs:
-
-```sh
-zappa tail
-```
-
-I used the AWS console for lambda to set the DATABASE_URL [env variable](https://github.com/Miserlou/Zappa#setting-environment-variables) for the Heroku app.
-
-Issue: the AWS lambda app is deployed at a URL like `https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production` i.e. it is not deployed at the root path but at `/production`. This breaks the swagger UI.
-
-To re-deploy zappa:
-
-```sh
-zappa update production
-```
-
 The API tests can be run against the deployed app like so:
 
 ```sh
-BASE_URL=https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production python -m pytest -s app_test.py
+BASE_URL=<heroku-url> python -m pytest -s app_test.py
 ```
 
 ## Resources
@@ -472,10 +401,3 @@ BASE_URL=https://779tuhzuhc.execute-api.eu-north-1.amazonaws.com/production pyth
 * [How to build a REST API with Tornado](https://medium.com/octopus-labs-london/how-to-build-a-rest-api-in-python-with-tornado-fc717c33824a)
 * [MongoDB Tutorial](https://pymongo.readthedocs.io/en/stable/tutorial.html)
 * [MongoDB Collection Operations](https://pymongo.readthedocs.io/en/stable/api/pymongo/collection.html)
-
-Serverless (AWS Lambda) deployment:
-
-* [Chalice - Serverless Python](https://realpython.com/aws-chalice-serverless-python/)
-* [AWS Lambda with Python - Simple Example](https://www.scalyr.com/blog/aws-lambda-with-python/)
-* [AWS Lambda with Python - Getting Started Guide](https://stackify.com/aws-lambda-with-python-a-complete-getting-started-guide/)
-* [The Official Guide to Serverless Flask](https://www.serverless.com/flask)
