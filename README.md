@@ -1,6 +1,6 @@
 # Python Content API
 
-An example Python CRUD/REST API framework. The idea is that you define models (see [example users model](models/users.py)) with JSON and database schema (for PostgreSQL). Once you have defined your model the framework will expose get/list/create/update/delete endpoints available for that model with validation and OpenAPI documentation.
+An example Python CRUD/REST API framework. The idea is that you define models (see [users model](models/users.py)) with JSON and database schema (for PostgreSQL) and the framework then expose get/list/create/update/delete endpoints for you with validation and OpenAPI documentation.
 
 ## Setting up the Development Environment
 
