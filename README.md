@@ -1,10 +1,10 @@
 # Python Content API
 
-An example Python CRUD (REST) API framework. The idea is that you define models (see [users model](models/users.py)) with JSON and database schema (for PostgreSQL) and the framework then take care of exposing get/list/create/update/delete endpoints for your model with validation and OpenAPI documentation.
+An example Python CRUD (REST) API framework. The idea is that you define models (see [users model](models/users.py)) with JSON and database schema (for PostgreSQL) and the framework then take care of exposing get/list/create/update/delete endpoints for your models with validation and OpenAPI documentation.
 
 ## Setting up the Development Environment
 
-Those instructions were tested with Python 3.11.4.
+Those instructions were tested with Python 3.11.6.
 
 Install packages in a virtual env:
 
@@ -51,6 +51,64 @@ rm -rf ./venv
 python -m venv venv
 . venv/bin/activate
 pip install -r requirements.txt
+```
+
+## Invoking the API
+
+Below is an example of testing the CRUD operations of the API from the command line using `curl` and [jq](https://stedolan.github.io/jq/) (`brew install jq`):
+
+```sh
+export BASE_URL=http://localhost:5000
+
+# create with invalid data yields 400
+curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com", "foo": 1}' $BASE_URL/v1/urls
+
+# successful create
+export URL=$(curl -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com"}' $BASE_URL/v1/urls)
+export ID=$(echo $URL | jq --raw-output '.id')
+
+# list
+curl -i $BASE_URL/v1/urls
+
+# list - pagination
+curl -i "$BASE_URL/v1/urls?offset=1&limit=50"
+
+# list - sorting
+curl -i "$BASE_URL/v1/urls?sort=created_at"
+
+# list - filtering
+curl -gi "$BASE_URL/v1/urls?filter.url=http://www.google.com"
+curl -gi "$BASE_URL/v1/urls?filter.url[contains]=google"
+curl -gi "$BASE_URL/v1/urls?filter.created_at[lt]=2023-12-02"
+
+# get of non-existant id yields 404
+curl -i $BASE_URL/v1/urls/12345
+
+# get
+curl -i $BASE_URL/v1/urls/$ID
+
+# update of non-existant id yields 404
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/12345
+
+# update with invalid data yields 400
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com", "foo": 1}' $BASE_URL/v1/urls/$ID
+
+# successful update
+curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/$ID
+
+# Check the update happened
+curl -i $BASE_URL/v1/urls
+curl -i $BASE_URL/v1/urls/$ID
+
+# delete of non-existant id yields 404
+curl -i -X DELETE $BASE_URL/v1/urls/12345
+
+# successful delete
+curl -i -X DELETE $BASE_URL/v1/urls/$ID
+
+# Check the delete happened
+curl -i $BASE_URL/v1/urls
+curl -i $BASE_URL/v1/urls/$ID
 ```
 
 ## Features
@@ -199,64 +257,6 @@ OpenAPI specification:
 open http://localhost:5000/v1/swagger.json
 ```
 
-## Invoking the API
-
-Below is an example of testing the CRUD operations of the API from the command line using `curl` and [jq](https://stedolan.github.io/jq/) (`brew install jq`):
-
-```sh
-export BASE_URL=http://localhost:5000
-
-# create with invalid data yields 400
-curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com", "foo": 1}' $BASE_URL/v1/urls
-
-# successful create
-export URL=$(curl -H "Content-Type: application/json" -X POST -d '{"url":"http://www.google.com"}' $BASE_URL/v1/urls)
-export ID=$(echo $URL | jq --raw-output '.id')
-
-# list
-curl -i -H "Content-Type: application/json" $BASE_URL/v1/urls
-
-# list - pagination
-curl -i "$BASE_URL/v1/urls?offset=50&limit=50"
-
-# list - sorting
-curl -i "$BASE_URL/v1/urls?sort=created_at"
-
-# list - filtering
-curl -gi "$BASE_URL/v1/urls?filter.url=http://www.yahoo.com"
-curl -gi "$BASE_URL/v1/urls?filter.url[contains]=652cd7805f3e4182960e7e8a0863e807"
-curl -gi "$BASE_URL/v1/urls?filter.created_at[lt]=2020-08-06%2009:31:28.092946"
-
-# get of non-existant id yields 404
-curl -i $BASE_URL/v1/urls/12345
-
-# get
-curl -i $BASE_URL/v1/urls/$ID
-
-# update of non-existant id yields 404
-curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/12345
-
-# update with invalid data yields 400
-curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com", "foo": 1}' $BASE_URL/v1/urls/$ID
-
-# successful update
-curl -i -H "Content-Type: application/json" -X PUT -d '{"url":"http://www.yahoo.com"}' $BASE_URL/v1/urls/$ID
-
-# Check the update happened
-curl -i $BASE_URL/v1/urls
-curl -i $BASE_URL/v1/urls/$ID
-
-# delete of non-existant id yields 404
-curl -i -X DELETE $BASE_URL/v1/urls/12345
-
-# successful delete
-curl -i -X DELETE $BASE_URL/v1/urls/$ID
-
-# Check the delete happened
-curl -i $BASE_URL/v1/urls
-curl -i $BASE_URL/v1/urls/$ID
-```
-
 ## Talking to Postgres
 
 From python:
@@ -327,8 +327,8 @@ db.urls.remove({})
 Specify Python version and Procfile for Heroku:
 
 ```sh
-python --version # => Python 3.11.4
-echo 'python-3.11.4' > runtime.txt
+python --version # => Python 3.11.6
+echo 'python-3.11.6' > runtime.txt
 echo 'web gunicorn app:app' > Procfile
 ```
 
