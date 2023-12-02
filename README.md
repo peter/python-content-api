@@ -182,7 +182,7 @@ DATABASE=mongodb bin/test
 The API tests can be run against the Heroku demo app as well:
 
 ```sh
-BASE_URL=https://python-heroku-rest-api.herokuapp.com pytest -s -vv content_api/app_test.py
+BASE_URL=https://python-rest-api-112f9b8f7887.herokuapp.com venv/bin/pytest -s -vv content_api/app_test.py
 ```
 
 ## API Documentation (OpenAPI/Swagger)
@@ -350,7 +350,19 @@ Add the [heroku-postgresql addon](https://elements.heroku.com/addons/heroku-post
 heroku addons:create heroku-postgresql:mini
 ```
 
-Test the app:
+Create the model schemas:
+
+```sh
+heroku run python -c "import content_api.models as models; models.create_schema()"
+```
+
+Run the tests:
+
+```sh
+BASE_URL=https://python-rest-api-112f9b8f7887.herokuapp.com venv/bin/pytest -s -vv content_api/app_test.py
+```
+
+Check out the OpenAPI docs:
 
 ```sh
 heroku open
