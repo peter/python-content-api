@@ -1,5 +1,58 @@
 # Python Content API
 
+An example Python CRUD/REST API framework. The idea is that you define models (see [example users model](models/users.py)) with JSON and database schema (for PostgreSQL). Once you have defined your model the framework will expose get/list/create/update/delete endpoints available for that model with validation and OpenAPI documentation.
+
+## Setting up the Development Environment
+
+Those instructions were tested with Python 3.11.4.
+
+Install packages in a virtual env:
+
+```sh
+python -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+```
+
+Create database:
+
+```sh
+createuser -s postgres # fixes role "postgres" does not exist
+createdb -U postgres python-rest-api
+python -c "import content_api.models as models; models.create_schema()"
+```
+
+Start a Flask server:
+
+```sh
+bin/start-dev
+
+open http://localhost:5000
+```
+
+Use the `FRAMEWORK` env variable to start using a different web framework:
+
+```sh
+FRAMEWORK=bottle bin/start-dev
+FRAMEWORK=tornado bin/start-dev
+```
+
+Run the tests:
+
+```sh
+FRAMEWORK=flask bin/test
+```
+
+To recreate the virtual environment:
+
+```sh
+deactivate
+rm -rf ./venv
+python -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+```
+
 ## Features
 
 * A microframework for content APIs with minimal codebase - less than 1000 lines of Python (see the [content_api](content_api) directory and [bin/loc](bin/loc))
@@ -12,14 +65,9 @@
 * OpenAPI/Swagger documentation generated from model routes (see [swagger.py](content_api/swagger.py))
 * Deployment to Heroku
 
-TODO:
-
-* Unique constraint for mongodb
-* Add a change log
-* Use OpenAPI support for parameter default values
-
 Some alternatives for building an API like this in Python with popular frameworks:
 
+* [FastAPI](https://fastapi.tiangolo.com)
 * [Flask](https://flask.palletsprojects.com) + [SQLAlchemy](https://www.sqlalchemy.org/) + (possibly) [OpenAPI-SQLAlchemy](https://pypi.org/project/OpenAPI-SQLAlchemy)
 * [Django REST Framework](https://www.django-rest-framework.org/)
 
@@ -63,7 +111,9 @@ Here is a short description of the most important modules in the [content_api](c
 
 ## OpenAPI and JSON Schema
 
-Something to be aware of is that unfortunately OpenAPI [does not](https://swagger.io/docs/specification/data-models/keywords/) have full [JSON Schema](http://json-schema.org/understanding-json-schema/) support. Examples of unsupported features are `patternProperties` and `type` properties with array (multiple) values, i.e. specifying that a value can be either a `string` or a `number` etc. To work around those limitations, and also, to add additional capabilities to your schemas you can use [OpenAPI extension properties](https://swagger.io/docs/specification/openapi-extensions). What I usually do is collect all my extensions under a single `x-meta` property and put the metadata that I need there.
+As of version 3.1 OpenAPI has full [JSON Schema](http://json-schema.org/understanding-json-schema/) support but versions prior to 3.1, [did not](https://swagger.io/docs/specification/data-models/keywords/). Examples of unsupported features were `patternProperties` and `type` properties with array (multiple) values, i.e. specifying that a value can be either a `string` or a `number` etc.
+
+To add additional capabilities to your schemas you can use [OpenAPI extension properties](https://swagger.io/docs/specification/openapi-extensions). One approach that I have used it to put all my extensions under a single `x-meta` property where I put all the metadata that I need.
 
 ## Decorators
 
@@ -112,40 +162,8 @@ Note that the `@wraps` decorator in the code above is not strictly necessary
 but its main purpose is to preserve the name of the handler function, i.e. it
 makes sure that `decorators_example.__name__` doesn't change.
 
-Composing decorators is fairly straightforward, see [models/composed_decorators_example.py](models/composed_decorators_example.py).
+Composing decorators is straight forward, see [models/composed_decorators_example.py](models/composed_decorators_example.py).
 
-## Setting up the Development Environment
-
-Install packages in a virtual env:
-
-```sh
-python -m venv venv
-. venv/bin/activate
-pip install -r requirements.txt
-```
-
-Create database:
-
-```sh
-createuser -s postgres # fixes role "postgres" does not exist
-createdb -U postgres python-rest-api
-python -c "import content_api.models as models; models.create_schema()"
-```
-
-Start a Flask server:
-
-```sh
-bin/start-dev
-
-open http://localhost:5000
-```
-
-Use the `FRAMEWORK` env variable to start using a different web framework:
-
-```sh
-FRAMEWORK=bottle bin/start-dev
-FRAMEWORK=tornado bin/start-dev
-```
 
 ## Running the API tests
 
@@ -196,7 +214,7 @@ export URL=$(curl -H "Content-Type: application/json" -X POST -d '{"url":"http:/
 export ID=$(echo $URL | jq --raw-output '.id')
 
 # list
-curl -i $BASE_URL/v1/urls
+curl -i -H "Content-Type: application/json" $BASE_URL/v1/urls
 
 # list - pagination
 curl -i "$BASE_URL/v1/urls?offset=50&limit=50"

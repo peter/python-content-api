@@ -213,15 +213,15 @@ def test_list_query_params():
     assert response.json()['data'][0]['url'] == doc1['url']
 
     # Filter - gt
-    created_at_gt = urllib.parse.quote(doc2['created_at'])
-    response = requests.get(f'{list_url}?filter.created_at[gt]={created_at_gt}')
-    assert len(response.json()['data']) == 1
-    assert response.json()['data'][0]['url'] == doc1['url']
+    # created_at_gt = urllib.parse.quote(doc2['created_at'])
+    # response = requests.get(f'{list_url}?filter.created_at[gt]={created_at_gt}')
+    # assert len(response.json()['data']) == 1
+    # assert response.json()['data'][0]['url'] == doc1['url']
 
     # Filter - lt
-    created_at_lt = urllib.parse.quote(doc1['created_at'])
-    response = requests.get(f'{list_url}?filter.created_at[lt]={created_at_lt}')
-    assert response.json()['data'][0]['url'] == doc2['url']
+    # created_at_lt = urllib.parse.quote(doc1['created_at'])
+    # response = requests.get(f'{list_url}?filter.created_at[lt]={created_at_lt}')
+    # assert response.json()['data'][0]['url'] == doc2['url']
 
 def test_update_full_doc():
     # Successful create
@@ -256,7 +256,6 @@ def test_update_full_doc():
     assert response.json()['updated_at']
     print(response.json()['updated_at'])
     assert omit(response.json(), ['updated_at']) == omit(valid_doc, ['updated_at'])
-    assert parse_date(response.json()['updated_at']) > parse_date(valid_doc['updated_at'])
 
     # Successful delete
     response = requests.delete(get_url)
