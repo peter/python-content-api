@@ -322,46 +322,13 @@ db.urls.find()
 db.urls.remove({})
 ```
 
-## How this app was created
-
-Create and activate virtual python env:
-
-```sh
-python -m venv venv
-echo 'venv' > .gitignore
-. venv/bin/activate
-```
-
-Add packages and freeze them in requirements.txt:
-
-```sh
-pip install gunicorn Flask psycopg2 requests
-pip freeze > requirements.txt
-```
-
-Create database:
-
-```sh
-createdb python-heroku-starter
-```
-
-Create script `bin/start-dev` and basic `app.py`.
-
-Push files to git:
-
-```sh
-git add .
-git commit -m 'hello world'
-git push origin master
-```
-
 ## Deployment with Heroku
 
 Specify Python version and Procfile for Heroku:
 
 ```sh
-python --version # => Python 3.7.7
-echo 'python-3.7.7' > runtime.txt
+python --version # => Python 3.11.4
+echo 'python-3.11.4' > runtime.txt
 echo 'web gunicorn app:app' > Procfile
 ```
 
