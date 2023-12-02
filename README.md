@@ -73,7 +73,7 @@ Some alternatives for building an API like this in Python with popular framework
 
 ## Demo App
 
-[python-heroku-rest-api.herokuapp.com](https://python-heroku-rest-api.herokuapp.com)
+[python-rest-api-112f9b8f7887.herokuapp.com](https://python-rest-api-112f9b8f7887.herokuapp.com)
 
 ## Models, Routes, and Handlers
 
@@ -347,13 +347,7 @@ git push heroku master
 Add the [heroku-postgresql addon](https://elements.heroku.com/addons/heroku-postgresql):
 
 ```sh
-heroku addons:create heroku-postgresql:hobby-dev
-```
-
-For MongoDB you can use the [mongolab addon](https://elements.heroku.com/addons/mongolab):
-
-```sh
-heroku addons:create mongolab:sandbox
+heroku addons:create heroku-postgresql:mini
 ```
 
 Test the app:
